@@ -1,0 +1,28 @@
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "_AdminLayout";
+}
+
+<h1 class="h3 mb-4">Dashboard</h1>
+
+<div class="row">
+    @foreach (var item in new[] { 
+        ("Total Cards", "0 (API Placeholder)"), 
+        ("Total Views", "N/A — Backend API unavailable"), 
+        ("Unique Visitors", "N/A — Backend API unavailable"), 
+        ("QR Scans", "N/A — Backend API unavailable"), 
+        ("Shares", "N/A — Backend API unavailable"), 
+        ("Leads", "N/A — Backend API unavailable"), 
+        ("Appointments", "N/A — Backend API unavailable") 
+    })
+    {
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-muted small">@item.Item1</h5>
+                    <p class="card-text fw-bold">@item.Item2</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>

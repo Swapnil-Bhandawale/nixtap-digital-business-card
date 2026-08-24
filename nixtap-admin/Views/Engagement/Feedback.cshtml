@@ -1,0 +1,17 @@
+@model List<nixtap_admin.Models.Api.FeedbackDto>
+@{ ViewData["Title"] = "Feedback"; Layout = "_AdminLayout"; }
+<h1>Feedback</h1>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead><tr><th>Name</th><th>Rating</th><th>Comment</th><th>Date</th></tr></thead>
+        <tbody>
+            @if (Model != null && Model.Any()) {
+                @foreach (var item in Model) {
+                    <tr><td>@item.visitorName</td><td><span class="badge bg-warning">@item.rating</span></td><td>@item.comment</td><td>@item.createdAt</td></tr>
+                }
+            } else {
+                <tr><td colspan="4" class="text-center text-muted">No feedback available.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>

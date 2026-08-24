@@ -1,0 +1,20 @@
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body class="bg-light">
+    <div class="container d-flex justify-content-center align-items-center vh-100">
+        <form method="post" class="p-4 border rounded bg-white" style="width: 300px;">
+            <h2 class="mb-3">Login</h2>
+            <div class="mb-3"><input name="email" type="email" class="form-control" placeholder="Email" required /></div>
+            <div class="mb-3"><input name="password" type="password" class="form-control" placeholder="Password" required /></div>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+    </div>
+</body>
+</html>

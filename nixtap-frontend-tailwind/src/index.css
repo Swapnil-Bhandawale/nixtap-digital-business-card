@@ -1,0 +1,54 @@
+@import "tailwindcss";
+html, body {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  scroll-behavior: smooth;
+}
+
+@theme {
+  --color-brand-50: #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-200: #bfdbfe;
+  --color-brand-300: #93c5fd;
+  --color-brand-400: #60a5fa;
+  --color-brand-500: #3b82f6;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+  --color-brand-800: #1e40af;
+  --color-brand-900: #1e3a8a;
+  --color-brand-950: #172554;
+  --color-cloud-50: #f8fafc;
+  --color-cloud-100: #f1f5f9;
+  --color-cloud-200: #e2e8f0;
+  --color-cloud-300: #cbd5e1;
+  --color-cloud-400: #94a3b8;
+  --color-cloud-500: #64748b;
+  --color-cloud-600: #475569;
+  --color-cloud-700: #334155;
+  --color-cloud-800: #1e293b;
+  --color-cloud-900: #0f172a;
+  --color-cloud-950: #020617;
+  --color-ink-50: #f8fafc;
+  --color-ink-100: #f1f5f9;
+  --color-ink-200: #e2e8f0;
+  --color-ink-300: #cbd5e1;
+  --color-ink-400: #94a3b8;
+  --color-ink-500: #64748b;
+  --color-ink-600: #475569;
+  --color-ink-700: #334155;
+  --color-ink-800: #1e293b;
+  --color-ink-900: #0f172a;
+  --color-ink-950: #020617;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+body {
+  @apply bg-white text-slate-900 dark:bg-[#0a0a0f] dark:text-slate-100;
+}
+
+.btn { @apply cursor-pointer bg-gradient-to-r from-indigo-600 to-[#8A7DFF]; }
+
+@keyframes marquee-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+@keyframes marquee-right { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
+.animate-marquee-left { animation: marquee-left 40s linear infinite; }
+.animate-marquee-right { animation: marquee-right 40s linear infinite; }

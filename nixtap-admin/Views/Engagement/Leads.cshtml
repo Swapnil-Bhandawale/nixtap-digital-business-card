@@ -1,0 +1,17 @@
+@model List<nixtap_admin.Models.Api.LeadDto>
+@{ ViewData["Title"] = "Leads"; Layout = "_AdminLayout"; }
+<h1>Leads</h1>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Message</th><th>Date</th></tr></thead>
+        <tbody>
+            @if (Model != null && Model.Any()) {
+                @foreach (var item in Model) {
+                    <tr><td>@item.visitorName</td><td>@item.visitorEmail</td><td>@item.visitorPhone</td><td>@item.message</td><td>@item.createdAt</td></tr>
+                }
+            } else {
+                <tr><td colspan="5" class="text-center text-muted">No leads available.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>

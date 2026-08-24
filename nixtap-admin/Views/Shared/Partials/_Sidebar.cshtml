@@ -1,0 +1,30 @@
+<div class="sidebar sidebar-dark bg-dark vh-100 p-3">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+        <span class="fs-4">Nixtap Admin</span>
+    </a>
+    <hr class="text-white">
+    <ul class="nav nav-pills flex-column mb-auto" id="sidebar-nav">
+        <li class="nav-item">
+            <a href="/Dashboard" class="nav-link text-white" data-path="/Dashboard">Dashboard</a>
+        </li>
+        <li><a href="/Cards" class="nav-link text-white" data-path="/Cards">Cards</a></li>
+        <li><a href="/Analytics" class="nav-link text-white" data-path="/Analytics">Analytics</a></li>
+        <li>
+            <a href="#" class="nav-link text-white">Engagement</a>
+            <ul class="nav nav-pills flex-column ms-3">
+                <li><a href="/Engagement/Leads" class="nav-link text-white small" data-path="/Engagement/Leads">Leads</a></li>
+                <li><a href="/Engagement/Appointments" class="nav-link text-white small" data-path="/Engagement/Appointments">Appointments</a></li>
+                <li><a href="/Engagement/Feedback" class="nav-link text-white small" data-path="/Engagement/Feedback">Feedback</a></li>
+            </ul>
+        </li>
+        <li><hr class="text-white"></li>
+        <li><a href="/Account/Logout" class="nav-link text-white">Logout</a></li>
+    </ul>
+</div>
+<script>
+    document.querySelectorAll('#sidebar-nav a').forEach(link => {
+        if (window.location.pathname === link.getAttribute('data-path')) {
+            link.classList.add('active');
+        }
+    });
+</script>
