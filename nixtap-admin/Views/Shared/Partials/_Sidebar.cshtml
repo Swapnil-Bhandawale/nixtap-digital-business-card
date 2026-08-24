@@ -1,29 +1,51 @@
-<div class="sidebar sidebar-dark bg-dark vh-100 p-3">
-    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-        <span class="fs-4">Nixtap Admin</span>
+<div class="sidebar d-flex flex-column p-4">
+    <a href="/" class="d-flex align-items-center mb-4 text-white text-decoration-none">
+        <div class="icon-squircle text-white me-2 fw-bold" style="width:34px; height:34px; border-radius:10px; background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%); font-size: 1.1rem; display: flex; align-items: center; justify-content: center;">
+            N
+        </div>
+        <span class="fs-4 fw-bolder tracking-tight text-white">Nixtap<span class="fw-normal opacity-75 ms-1" style="font-size: 0.75em">Admin</span></span>
     </a>
-    <hr class="text-white">
-    <ul class="nav nav-pills flex-column mb-auto" id="sidebar-nav">
+    <hr class="border-secondary mb-4 opacity-25">
+    
+    <ul class="nav nav-pills flex-column mb-auto gap-2" id="sidebar-nav">
         <li class="nav-item">
-            <a href="/Dashboard" class="nav-link text-white" data-path="/Dashboard">Dashboard</a>
+            <a href="/Dashboard" class="nav-link text-light px-3 py-2 rounded-3 fw-medium d-flex align-items-center" data-path="/Dashboard">
+                <i class="fas fa-home me-3 opacity-75" style="width:20px"></i> Platform Overview
+            </a>
         </li>
-        <li><a href="/Cards" class="nav-link text-white" data-path="/Cards">Cards</a></li>
-        <li><a href="/Analytics" class="nav-link text-white" data-path="/Analytics">Analytics</a></li>
         <li>
-            <a href="#" class="nav-link text-white">Engagement</a>
-            <ul class="nav nav-pills flex-column ms-3">
-                <li><a href="/Engagement/Leads" class="nav-link text-white small" data-path="/Engagement/Leads">Leads</a></li>
-                <li><a href="/Engagement/Appointments" class="nav-link text-white small" data-path="/Engagement/Appointments">Appointments</a></li>
-                <li><a href="/Engagement/Feedback" class="nav-link text-white small" data-path="/Engagement/Feedback">Feedback</a></li>
-            </ul>
+            <a href="/Users" class="nav-link text-light px-3 py-2 rounded-3 fw-medium d-flex align-items-center" data-path="/Users">
+                <i class="fas fa-users me-3 opacity-75" style="width:20px"></i> Manage Users
+            </a>
         </li>
-        <li><hr class="text-white"></li>
-        <li><a href="/Account/Logout" class="nav-link text-white">Logout</a></li>
+        <li>
+            <a href="/Revenue" class="nav-link text-light px-3 py-2 rounded-3 fw-medium d-flex align-items-center" data-path="/Revenue">
+                <i class="fas fa-chart-line me-3 opacity-75" style="width:20px"></i> Revenue & Payments
+            </a>
+        </li>
+        <li>
+            <a href="/Hardware" class="nav-link text-light px-3 py-2 rounded-3 fw-medium d-flex align-items-center" data-path="/Hardware">
+                <i class="fas fa-microchip me-3 opacity-75" style="width:20px"></i> Hardware & Cards
+            </a>
+        </li>
     </ul>
+
+    <hr class="border-secondary mt-4 opacity-25">
+    <a href="/Account/Logout" class="nav-link text-danger px-3 py-2 rounded-3 fw-bold d-flex align-items-center">
+        <i class="fas fa-sign-out-alt me-3" style="width:20px"></i> Logout
+    </a>
 </div>
+
+<style>
+    .sidebar { background-color: #0f172a; border-right: 1px solid #1e293b; }
+    .nav-link { transition: all 0.2s ease-in-out; }
+    .nav-link:hover { background-color: rgba(255,255,255,0.05); transform: translateX(3px); }
+    .nav-link.active { background-color: #4f46e5 !important; color: white !important; box-shadow: 0 4px 12px rgba(79,70,229,0.3); }
+</style>
+
 <script>
-    document.querySelectorAll('#sidebar-nav a').forEach(link => {
-        if (window.location.pathname === link.getAttribute('data-path')) {
+    document.querySelectorAll('#sidebar-nav a[data-path]').forEach(link => {
+        if (window.location.pathname.toLowerCase().startsWith(link.getAttribute('data-path').toLowerCase())) {
             link.classList.add('active');
         }
     });

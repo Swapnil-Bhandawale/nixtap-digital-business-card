@@ -29,5 +29,10 @@ export const publicApi = {
   submitFeedback: async (cardId, data) => {
     const response = await apiClient.post(`/public/cards/${cardId}/feedback`, data);
     return response.data;
+  },
+
+  getFeedbacks: async (cardId) => {
+    const response = await apiClient.get(`/public/cards/${cardId}/feedback`);
+    return response.data;
   }
 };

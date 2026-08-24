@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { cardApi } from '../../api/cardApi';
 import { publicApi } from '../../api/publicApi';
-import { Mail, Phone, Globe, MapPin, Share2, Download } from 'lucide-react';
+import { Mail, Phone, Globe, MapPin, Share2, Download, Calendar, BookOpen, MessageSquare, IndianRupee } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
+import { SOCIAL_PLATFORMS } from '../../data/socialIcons';
+
 
 export default function PublicCard() {
   const { cardId } = useParams();
@@ -79,11 +81,27 @@ export default function PublicCard() {
   };
 
 
+  
+  const [isQrOpen, setIsQrOpen] = useState(false);
+  const [feedbacks, setFeedbacks] = useState([]);
+  
+  // Custom theme colors for buttons based on card theme
+  const themeColor = card?.themeColor || card?.theme || '#2563eb';
+
   useEffect(() => {
     const fetchCard = async () => {
       try {
         const data = await cardApi.getPublicCard(cardId);
         setCard(data);
+        
+        // Fetch feedbacks
+        try {
+           const fbs = await publicApi.getFeedbacks(cardId);
+           setFeedbacks(fbs?.data || []);
+        } catch(e) {
+           console.log("Feedbacks not found", e);
+        }
+
       } catch (error) {
         console.error('Failed to load public card', error);
         setCard(null);
@@ -97,56 +115,182 @@ export default function PublicCard() {
   if (isLoading) return <div className="min-h-screen flex items-center justify-center bg-gray-50">Loading profile...</div>;
   if (!card) return <div className="min-h-screen flex items-center justify-center">Card not found</div>;
 
-  return (
-    <div className="min-h-screen bg-gray-100 flex justify-center pb-20 sm:py-10">
-      <div className="w-full max-w-md bg-white sm:rounded-[2rem] shadow-2xl overflow-hidden relative">
-        {/* Cover Photo area */}
-        <div className="h-48 relative" style={{ backgroundColor: card.theme || card.themeColor || '#8b5cf6' }}>
-          <div className="absolute top-4 right-4 flex space-x-2">
-            <button className="w-10 h-10 rounded-full bg-white/20 backdrop-blur flex items-center justify-center text-white hover:bg-white/30 transition">
-              <Share2 className="w-5 h-5" />
+    return (
+    <div className="min-h-screen bg-[#f3f4f6] flex justify-center antialiased">
+      <div className="w-full max-w-[430px] min-h-screen bg-white shadow-2xl relative overflow-y-auto pb-20">
+        
+        {/* Cover Photo */}
+        <div className="relative h-48 w-full bg-gray-200" style={{ backgroundColor: card.themeColor || card.theme || '#8b5cf6' }}>
+          {card.coverImageUrl && (
+            <img src={card.coverImageUrl} className="w-full h-full object-cover" alt="Cover" />
+          )}
+          
+          <div className="absolute top-4 right-4 z-10">
+            <button onClick={() => setIsQrOpen(true)} className="w-10 h-10 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-black/60 transition shadow-lg">
+              <Share2 className="w-4 h-4" />
             </button>
           </div>
         </div>
-        
-        <div className="px-8 relative -mt-16 pb-8">
-          <div className="w-32 h-32 rounded-full bg-white border-4 border-white shadow-lg mx-auto flex items-center justify-center text-4xl font-bold overflow-hidden" style={{ color: card.theme || card.themeColor || '#8b5cf6' }}>
-            {card.profileImageUrl ? (
-              <img src={card.profileImageUrl} alt={card.fullName} className="w-full h-full object-cover" />
-            ) : (
-              card.fullName ? card.fullName.charAt(0).toUpperCase() : 'N'
+
+        {/* Main Content Area */}
+                <div className="px-6 relative -mt-16 flex flex-col items-center">
+          
+          {/* Avatar with Logo */}
+          <div className="relative mb-3 inline-block">
+            <div className="w-[124px] h-[124px] rounded-full border-[5px] border-white shadow-[0_8px_25px_rgba(0,0,0,0.1)] overflow-hidden bg-white flex items-center justify-center text-4xl font-bold" style={{ color: themeColor }}>
+              {card.profileImageUrl ? (
+                <img src={card.profileImageUrl} className="w-full h-full object-cover" alt="Avatar" />
+              ) : (
+                card.fullName ? card.fullName.charAt(0).toUpperCase() : 'N'
+              )}
+            </div>
+            {card.customFields?.companyLogo && (
+               <div className="absolute bottom-1 right-1 w-9 h-9 bg-white rounded-full border-2 border-white shadow-md flex items-center justify-center overflow-hidden">
+                 <img src={card.customFields.companyLogo} alt="Logo" className="w-full h-full object-cover" />
+               </div>
             )}
           </div>
-          
-          <div className="text-center mt-6 space-y-2">
-            <h1 className="text-2xl font-bold text-gray-900">{card.fullName}</h1>
-            <p className="text-lg font-medium" style={{ color: card.theme || card.themeColor || '#8b5cf6' }}>{card.jobTitle}</p>
-            <p className="text-gray-500 font-medium">{card.company}</p>
-          </div>
-          
-          <div className="mt-8 text-center">
-            <p className="text-gray-600 leading-relaxed text-[15px]">
-              {card.bio}
-            </p>
+
+          {/* Name & Details */}
+          <h1 className="text-[22px] font-bold text-slate-800 mb-1 flex items-center gap-1.5 text-center mt-3 justify-center">
+            {card.fullName}
+            <svg className="w-5 h-5 text-blue-500 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          </h1>
+          <p className="text-[15px] font-medium text-slate-500 mb-0.5 text-center">{card.jobTitle}</p>
+          <p className="text-[13px] text-slate-500 font-medium mb-6 flex items-center justify-center gap-1.5 text-center">
+            <MapPin className="w-3 h-3 shrink-0" />
+            {card.customFields?.city || ''}{card.customFields?.city && card.customFields?.country ? ', ' : ''}{card.customFields?.country || ''} 
+            {(card.customFields?.city || card.customFields?.country) && card.company ? ' • ' : ''} 
+            {card.company}
+          </p>
+
+          {/* Primary Action Buttons */}
+          <div className="w-full flex gap-3 mb-8">
+            <button className="flex-1 py-3.5 rounded-full text-white font-bold text-[15px] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 transform active:scale-[0.98] shadow-lg flex items-center justify-center gap-2" style={{ backgroundColor: themeColor, shadowColor: themeColor }}>
+              <Download className="w-4 h-4" /> Save Contact
+            </button>
+            <button onClick={() => setIsApptOpen(true)} className="w-[52px] h-[52px] rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all transform active:scale-[0.98] shadow-sm group" style={{ color: themeColor }}>
+              <Calendar className="w-5 h-5 transition-colors" />
+            </button>
           </div>
 
-            <div className="px-8 mt-12 space-y-4">
-              <Button className="w-full h-14 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all" style={{ backgroundColor: card.themeColor || '#8b5cf6', color: '#fff' }}>
-                Save Contact
-              </Button>
-              <Button onClick={() => setIsLeadOpen(true)} className="w-full h-14 text-lg font-semibold rounded-xl shadow-sm hover:shadow-md transition-all bg-white border-2 text-gray-800" style={{ borderColor: card.themeColor || '#8b5cf6' }}>
-                Exchange Contacts
-              </Button>
-              <Button onClick={() => setIsApptOpen(true)} className="w-full h-14 text-lg font-semibold rounded-xl shadow-sm hover:shadow-md transition-all bg-white border-2 text-gray-800" style={{ borderColor: card.themeColor || '#8b5cf6' }}>
-                Book an Appointment
-              </Button>
-              <Button onClick={() => setIsFeedbackOpen(true)} className="w-full h-14 text-lg font-semibold rounded-xl shadow-sm hover:shadow-md transition-all bg-white border-2 text-gray-800" style={{ borderColor: card.themeColor || '#8b5cf6' }}>
-                Leave Feedback
-              </Button>
+          {/* ABOUT Section */}
+          {card.bio && (
+            <div className="w-full mb-8">
+              <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center mb-4">About</h3>
+              <p className="text-[14px] text-slate-800 leading-relaxed text-center whitespace-pre-wrap">
+                {card.bio}
+              </p>
+            </div>
+          )}
+
+          {/* SOCIALS Section */}
+          {card.socialLinks && card.socialLinks.length > 0 && (
+            <div className="w-full mb-10">
+              <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center mb-6">Socials</h3>
+              <div className="grid grid-cols-4 gap-y-5 gap-x-4 justify-items-center px-2">
+                {card.socialLinks.map((link) => {
+                  const platformData = SOCIAL_PLATFORMS.find(p => p.key === link.platform.toLowerCase());
+                  if (!platformData) return null;
+                  return (
+                    <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="w-[64px] h-[64px] bg-white border border-slate-100 shadow-[0_4px_15px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] hover:border-slate-200 rounded-[20px] flex items-center justify-center transition-all transform hover:-translate-y-1 group" style={{ color: platformData.color }}>
+                      <div className="w-8 h-8 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full group-hover:scale-110 transition-transform">
+                        {platformData.icon}
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* ACTIONS Section (Grid) */}
+          <div className="w-full mb-8">
+            <div className="grid grid-cols-2 gap-3 mb-3">
+              {card.customFields?.googleMaps && (
+                <a href={card.customFields.googleMaps} target="_blank" rel="noopener noreferrer" className="w-full flex flex-col items-center justify-center bg-white border border-slate-100 hover:border-blue-200 hover:shadow-[0_8px_20px_rgb(0,0,0,0.04)] transition-all p-5 rounded-[24px] shadow-[0_2px_10px_rgba(0,0,0,0.03)] group gap-3 text-center">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-500 transition-colors shrink-0 shadow-inner">
+                    <img src="https://img.icons8.com/color/48/google-maps-new.png" alt="Google Maps" className="w-7 h-7 transition-all duration-300 group-hover:brightness-0 group-hover:invert" />
+                  </div>
+                  <span className="font-semibold text-slate-800 text-[13px] leading-tight">Navigate<br/>to Office</span>
+                </a>
+              )}
+              {card.customFields?.upi && (
+                <a href={card.customFields.upi.includes('://') ? card.customFields.upi : `upi://pay?pa=${card.customFields.upi}`} target="_blank" rel="noopener noreferrer" className="w-full flex flex-col items-center justify-center bg-white border border-slate-100 hover:border-blue-200 hover:shadow-[0_8px_20px_rgb(0,0,0,0.04)] transition-all p-5 rounded-[24px] shadow-[0_2px_10px_rgba(0,0,0,0.03)] group gap-3 text-center">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center group-hover:bg-emerald-500 transition-colors shrink-0 shadow-inner">
+                    <IndianRupee className="w-5 h-5 text-emerald-600 group-hover:text-white transition-colors" />
+                  </div>
+                  <span className="font-semibold text-slate-800 text-[13px] leading-tight">Make a<br/>Payment</span>
+                </a>
+              )}
+              <button onClick={() => setIsLeadOpen(true)} className="w-full flex flex-col items-center justify-center bg-white border border-slate-100 hover:border-blue-200 hover:shadow-[0_8px_20px_rgb(0,0,0,0.04)] transition-all p-5 rounded-[24px] shadow-[0_2px_10px_rgba(0,0,0,0.03)] group gap-3 text-center">
+                <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-500 transition-colors shrink-0 shadow-inner">
+                  <BookOpen className="w-5 h-5 group-hover:text-white transition-colors" style={{ color: themeColor }} />
+                </div>
+                <span className="font-semibold text-slate-800 text-[13px] leading-tight">Exchange<br/>Contacts</span>
+              </button>
+              <button onClick={() => setIsApptOpen(true)} className="w-full flex flex-col items-center justify-center bg-white border border-slate-100 hover:border-blue-200 hover:shadow-[0_8px_20px_rgb(0,0,0,0.04)] transition-all p-5 rounded-[24px] shadow-[0_2px_10px_rgba(0,0,0,0.03)] group gap-3 text-center">
+                <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center group-hover:bg-purple-500 transition-colors shrink-0 shadow-inner">
+                  <Calendar className="w-5 h-5 text-purple-600 group-hover:text-white transition-colors" />
+                </div>
+                <span className="font-semibold text-slate-800 text-[13px] leading-tight">Book an<br/>Appointment</span>
+              </button>
             </div>
 
-          
-          {/* Lead Capture Modal */}
+            <button onClick={() => setIsFeedbackOpen(true)} className="w-full relative flex items-center justify-center bg-white border border-slate-100 hover:border-orange-200 hover:shadow-[0_8px_20px_rgb(0,0,0,0.04)] transition-all px-4 py-4 rounded-[24px] shadow-[0_2px_10px_rgba(0,0,0,0.03)] group gap-3">
+              <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center group-hover:bg-orange-500 transition-colors shrink-0">
+                <MessageSquare className="w-4 h-4 text-orange-500 group-hover:text-white transition-colors" />
+              </div>
+              <span className="font-bold text-slate-800 text-[15px]">Leave Feedback</span>
+              <svg className="w-3 h-3 text-slate-300 group-hover:text-orange-500 transition-colors absolute right-6" fill="currentColor" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
+
+          {/* Wall of Love Section */}
+          {feedbacks && feedbacks.length > 0 && (
+            <div className="w-full mb-10">
+              <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center mb-6">Wall of Love ❤️</h3>
+              <div className="relative h-[250px] overflow-hidden rounded-[24px] bg-slate-50/50 border border-slate-100 shadow-inner p-4">
+                <div className="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-[#f8fafc] to-transparent z-10 pointer-events-none rounded-t-[24px]"></div>
+                <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#f8fafc] to-transparent z-10 pointer-events-none rounded-b-[24px]"></div>
+                <div className="animate-ticker-vertical flex flex-col gap-4">
+                  {feedbacks.map((fb, idx) => (
+                    <div key={idx} className="bg-white p-5 rounded-[20px] shadow-[0_4px_15px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col gap-3 snap-start w-full mx-auto">
+                      <div className="flex gap-1 text-yellow-400 text-sm">
+                        {[...Array(5)].map((_, i) => (
+                          <svg key={i} className={`w-3.5 h-3.5 ${i < fb.rating ? 'text-yellow-400' : 'text-slate-200'}`} fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        ))}
+                      </div>
+                      <p className="text-[13.5px] text-slate-700 leading-relaxed font-medium italic">"{fb.comment}"</p>
+                      {fb.imageUrl && (
+                        <div className="w-full h-32 rounded-xl overflow-hidden mt-1">
+                          <img src={fb.imageUrl} alt="Feedback" className="w-full h-full object-cover" />
+                        </div>
+                      )}
+                      <div className="flex items-center gap-2 mt-1">
+                        <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500 uppercase">
+                          {fb.visitorName ? fb.visitorName.charAt(0) : 'A'}
+                        </div>
+                        <span className="text-xs font-bold text-slate-800">{fb.visitorName || 'Anonymous'}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+        </div>
+{/* Footer Branding */}
+        <div className="mt-4 pb-6 flex justify-center">
+          <div className="flex flex-col items-center">
+            <p className="text-[10px] text-gray-400 font-medium tracking-widest uppercase mb-1">Create your own</p>
+            <p className="text-sm font-bold text-[#111827] tracking-tight">Nixtap Profile</p>
+          </div>
+        </div>
+
+        {/* MODALS */}
+        {/* Lead Capture Modal */}
           {isLeadOpen && (
             <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4 animate-in fade-in duration-200">
               <div className="bg-white w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
@@ -205,9 +349,90 @@ export default function PublicCard() {
               </div>
             </div>
           )}
+        
+                {/* QR Code Modal */}
+        {isQrOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
+            <div className="bg-white w-full max-w-[320px] rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+              <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100">
+                <h2 className="text-lg font-bold text-gray-900">Scan to Connect</h2>
+                <button onClick={() => setIsQrOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
+              <div className="p-8 flex flex-col items-center justify-center">
+                <div className="w-48 h-48 bg-white border border-gray-100 shadow-sm rounded-xl p-2 mb-4">
+                  <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(card.shareableUrl || window.location.href)}`} alt="QR Code" className="w-full h-full object-cover rounded-lg" />
+                </div>
+                <p className="text-sm font-semibold text-slate-800">{card.fullName}</p>
+                <p className="text-xs text-slate-500 mt-1 truncate max-w-full px-2">{card.shareableUrl || window.location.href}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
+        {/* Feedback Modal */}
+        {isFeedbackOpen && (
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4 animate-in fade-in duration-200">
+            <div className="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300">
+              <div className="flex justify-between items-center px-6 py-5 border-b border-gray-100 shrink-0">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">Leave Feedback</h2>
+                  <p className="text-sm text-gray-500 mt-1">Share your experience with {card.fullName}</p>
+                </div>
+                <button onClick={() => setIsFeedbackOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
+              
+              {feedbackState === 'success' ? (
+                  <div className="p-10 flex flex-col items-center text-center">
+                    <div className="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center mb-6">
+                      <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h3>
+                    <p className="text-gray-500 mb-8 leading-relaxed">Your feedback has been submitted successfully.</p>
+                    <Button onClick={() => { setIsFeedbackOpen(false); setFeedbackState('idle'); }} className="w-full h-12 text-base font-semibold rounded-xl" style={{ backgroundColor: themeColor, color: '#fff' }}>
+                      Done
+                    </Button>
+                  </div>
+              ) : (
+                <form onSubmit={handleFeedbackSubmit} className="flex flex-col flex-1 overflow-hidden">
+                  <div className="p-6 space-y-5 overflow-y-auto custom-scrollbar">
+                    {feedbackState === 'error' && (
+                        <div className="p-3 bg-red-50 text-red-700 text-sm font-medium rounded-xl border border-red-100">
+                          Failed to submit. Please try again.
+                        </div>
+                    )}
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Rating</label>
+                      <div className="flex gap-2 text-3xl">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <svg key={star} onClick={() => setFeedbackForm({...feedbackForm, rating: star})} className={`w-8 h-8 cursor-pointer transition-transform hover:scale-110 ${star <= feedbackForm.rating ? 'text-yellow-400' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Your Name *</label>
+                      <input type="text" required value={feedbackForm.name} onChange={e => setFeedbackForm({...feedbackForm, name: e.target.value})} placeholder="John Doe" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-all" style={{ '--tw-ring-color': themeColor }} />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Review / Comment</label>
+                      <textarea value={feedbackForm.comment} onChange={e => setFeedbackForm({...feedbackForm, comment: e.target.value})} placeholder="Write your experience..." rows="3" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-all resize-none" style={{ '--tw-ring-color': themeColor }}></textarea>
+                    </div>
+                  </div>
+                  <div className="p-6 border-t border-gray-100 bg-gray-50 shrink-0">
+                    <Button type="submit" disabled={feedbackState === 'submitting'} className="w-full h-12 text-base font-semibold rounded-xl text-white shadow-md hover:opacity-90 transition-all disabled:opacity-70" style={{ backgroundColor: themeColor }}>
+                      {feedbackState === 'submitting' ? 'Submitting...' : 'Submit Feedback'}
+                    </Button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        )}
 
-          {/* Appointment Booking Modal */}
+        {/* Appointment Booking Modal */}
           {isApptOpen && (
             <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4 animate-in fade-in duration-200">
               <div className="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in slide-in-from-bottom-10 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300">
@@ -280,51 +505,7 @@ export default function PublicCard() {
               </div>
             </div>
           )}
-
-          <div className="mt-10 space-y-4">
-            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">Contact Info</h3>
-            
-            {card.email && (
-              <a href={`mailto:${card.email}`} className="flex items-center p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center mr-4" style={{ backgroundColor: `${card.theme || card.themeColor || '#8b5cf6'}15`, color: card.theme || card.themeColor || '#8b5cf6' }}>
-                  <Mail className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 font-medium">Email</p>
-                  <p className="font-medium text-gray-900">{card.email}</p>
-                </div>
-              </a>
-            )}
-            
-            {card.phone && (
-              <a href={`tel:${card.phone}`} className="flex items-center p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center mr-4" style={{ backgroundColor: `${card.theme || card.themeColor || '#8b5cf6'}15`, color: card.theme || card.themeColor || '#8b5cf6' }}>
-                  <Phone className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 font-medium">Phone</p>
-                  <p className="font-medium text-gray-900">{card.phone}</p>
-                </div>
-              </a>
-            )}
-            
-            {card.website && (
-              <a href={card.website} target="_blank" rel="noopener noreferrer" className="flex items-center p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center mr-4" style={{ backgroundColor: `${card.theme || card.themeColor || '#8b5cf6'}15`, color: card.theme || card.themeColor || '#8b5cf6' }}>
-                  <Globe className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 font-medium">Website</p>
-                  <p className="font-medium text-gray-900">{card.website.replace(/^https?:\/\//, '')}</p>
-                </div>
-              </a>
-            )}
-          </div>
-        </div>
         
-        <div className="py-6 text-center border-t border-gray-100 bg-gray-50">
-          <p className="text-xs font-medium text-gray-400">Powered by Nixtap</p>
-        </div>
       </div>
     </div>
   );

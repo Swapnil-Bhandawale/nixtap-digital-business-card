@@ -1,0 +1,24 @@
+@{
+    ViewData["Title"] = "Hardware & Cards";
+    Layout = "_AdminLayout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold text-dark m-0">Hardware Inventory</h1>
+        <p class="text-muted m-0">Generate URLs for new physical NFC cards before shipping.</p>
+    </div>
+    <button class="btn btn-primary px-4 py-2 fw-bold shadow-sm rounded-pill" onclick="alert('Batch Generation API coming soon!')">
+        <i class="fas fa-plus me-2"></i> Generate New Batch
+    </button>
+</div>
+
+<div class="card premium-card overflow-hidden">
+    <div class="card-body p-5 text-center">
+        <div class="icon-squircle bg-light text-muted mx-auto mb-4" style="width: 80px; height: 80px; font-size: 2.5rem;">
+            <i class="fas fa-microchip"></i>
+        </div>
+        <h3 class="fw-bold">No Unassigned Cards</h3>
+        <p class="text-muted mb-4">Generate a new batch of URLs to program into your blank NFC cards.</p>
+    </div>
+</div>

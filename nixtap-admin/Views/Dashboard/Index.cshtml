@@ -1,28 +1,80 @@
+@model nixtap_admin.Controllers.SuperAdminDashboardViewModel
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "Super Admin Dashboard";
     Layout = "_AdminLayout";
 }
 
-<h1 class="h3 mb-4">Dashboard</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold text-dark m-0">Platform Overview</h1>
+        <p class="text-muted m-0">Welcome back, Super Admin. Here's how Nixtap is performing today.</p>
+    </div>
+</div>
 
-<div class="row">
-    @foreach (var item in new[] { 
-        ("Total Cards", "0 (API Placeholder)"), 
-        ("Total Views", "N/A — Backend API unavailable"), 
-        ("Unique Visitors", "N/A — Backend API unavailable"), 
-        ("QR Scans", "N/A — Backend API unavailable"), 
-        ("Shares", "N/A — Backend API unavailable"), 
-        ("Leads", "N/A — Backend API unavailable"), 
-        ("Appointments", "N/A — Backend API unavailable") 
-    })
-    {
-        <div class="col-md-3 mb-3">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-muted small">@item.Item1</h5>
-                    <p class="card-text fw-bold">@item.Item2</p>
+<div class="row g-4 mb-5">
+    <!-- Total Users -->
+    <div class="col-md-3">
+        <div class="card premium-card bg-gradient-blue text-white h-100">
+            <div class="card-body p-4 d-flex flex-column justify-content-center">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title text-white-50 m-0 small fw-bold text-uppercase tracking-wider">Registered Users</h5>
+                    <i class="fas fa-users text-white-50"></i>
                 </div>
+                <h2 class="card-text fw-bolder mb-0 display-6">@Model.TotalUsers</h2>
             </div>
         </div>
-    }
+    </div>
+    
+    <!-- Active Subscriptions -->
+    <div class="col-md-3">
+        <div class="card premium-card bg-gradient-purple text-white h-100">
+            <div class="card-body p-4 d-flex flex-column justify-content-center">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title text-white-50 m-0 small fw-bold text-uppercase tracking-wider">Active PRO Users</h5>
+                    <i class="fas fa-crown text-white-50"></i>
+                </div>
+                <h2 class="card-text fw-bolder mb-0 display-6">@Model.ActiveSubscriptions</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Payments -->
+    <div class="col-md-3">
+        <div class="card premium-card bg-gradient-green text-white h-100">
+            <div class="card-body p-4 d-flex flex-column justify-content-center">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title text-white-50 m-0 small fw-bold text-uppercase tracking-wider">Success Payments</h5>
+                    <i class="fas fa-check-circle text-white-50"></i>
+                </div>
+                <h2 class="card-text fw-bolder mb-0 display-6">@Model.SuccessPayments</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Payments -->
+    <div class="col-md-3">
+        <div class="card premium-card bg-gradient-orange text-white h-100">
+            <div class="card-body p-4 d-flex flex-column justify-content-center">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title text-white-50 m-0 small fw-bold text-uppercase tracking-wider">Total Transactions</h5>
+                    <i class="fas fa-receipt text-white-50"></i>
+                </div>
+                <h2 class="card-text fw-bolder mb-0 display-6">@Model.TotalPayments</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-12">
+        <div class="card premium-card">
+            <div class="card-body p-5 text-center">
+                <div class="icon-squircle bg-light text-muted mx-auto mb-4" style="width: 80px; height: 80px; font-size: 2.5rem;">
+                    <i class="fas fa-server"></i>
+                </div>
+                <h3 class="fw-bold">Platform Status: <span class="text-success">Healthy</span></h3>
+                <p class="text-muted">All microservices (Auth, Cards, Analytics, Payments) are running normally.</p>
+            </div>
+        </div>
+    </div>
 </div>

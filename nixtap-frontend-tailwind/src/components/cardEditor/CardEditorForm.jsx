@@ -29,6 +29,9 @@ function defaultForm(initial = {}) {
     dial: initial.dial ?? '+91',
     phoneNumber: initial.phoneNumber ?? '9503334444',
     website: initial.website ?? '',
+    bio: initial.bio ?? '',
+    googleMaps: (initial.customFields && initial.customFields.googleMaps) ? initial.customFields.googleMaps : '',
+    upi: (initial.customFields && initial.customFields.upi) ? initial.customFields.upi : '',
   };
 }
 
@@ -190,6 +193,8 @@ export default function CardEditorForm({ mode = 'create', cardId = null, initial
       state: form.state,
       city: form.city,
       website: form.website,
+      googleMaps: form.googleMaps,
+      upi: form.upi,
     };
     
     const query = new URLSearchParams(window.location.search);
@@ -207,7 +212,7 @@ export default function CardEditorForm({ mode = 'create', cardId = null, initial
       profileImageUrl: avatarUrl,
       coverImageUrl: bannerUrl,
       customFields,
-      bio: '', // Can add a bio field later if needed
+      bio: form.bio,
     };
     
     if (mode === 'edit') {
@@ -387,6 +392,24 @@ export default function CardEditorForm({ mode = 'create', cardId = null, initial
             </Field>
             <Field label="Website">
               <Input value={form.website} onChange={(v) => setField('website', v)} placeholder="https://..." />
+            </Field>
+            
+            <Field label="Bio (About me)" className="mt-3">
+              <textarea 
+                value={form.bio} 
+                onChange={(e) => setField('bio', e.target.value)} 
+                placeholder="Tell your clients about yourself..." 
+                rows={3}
+                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+              />
+            </Field>
+            
+            <Field label="Google Maps Link" className="mt-3">
+              <Input value={form.googleMaps} onChange={(v) => setField('googleMaps', v)} placeholder="https://maps.google.com/..." />
+            </Field>
+            
+            <Field label="UPI ID / Payment Link" className="mt-3">
+              <Input value={form.upi} onChange={(v) => setField('upi', v)} placeholder="yourname@upi or https://razorpay.me/..." />
             </Field>
           </div>
         </Section>

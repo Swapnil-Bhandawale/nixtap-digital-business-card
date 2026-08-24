@@ -1,7 +1,0 @@
-@{ ViewData["Title"] = "Analytics"; Layout = "_AdminLayout"; }
-<h1>Analytics</h1>
-<p>Select a card to view analytics.</p>
-@if (ViewBag.CardId != null) {
-    <p>Analytics for card: @ViewBag.CardId</p>
-    <p>N/A — Not provided by backend</p>
-}

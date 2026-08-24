@@ -6,9 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+var gatewayUrl = builder.Configuration["ApiGatewayUrl"] ?? "http://localhost:8080";
+
 builder.Services.AddHttpClient<GatewayApiClient>(client =>
 {
-    client.BaseAddress = new Uri("http://localhost:8080");
+    client.BaseAddress = new Uri(gatewayUrl);
 });
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -24,7 +26,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

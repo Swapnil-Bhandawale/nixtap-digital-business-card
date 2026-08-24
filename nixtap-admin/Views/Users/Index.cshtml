@@ -1,0 +1,93 @@
+@model nixtap_admin.Services.Api.AdminUsersResponse
+@{
+    ViewData["Title"] = "Manage Users";
+    Layout = "_AdminLayout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold text-dark m-0">Platform Users</h1>
+        <p class="text-muted m-0">Manage all registered businesses and individuals on Nixtap.</p>
+    </div>
+    <div class="bg-primary text-white rounded-pill px-4 py-2 fw-bold shadow-sm">
+        Total: @Model?.totalElements
+    </div>
+</div>
+
+<div class="card premium-card overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light">
+                <tr>
+                    <th class="px-4 py-3 text-secondary text-uppercase" style="font-size: 0.75rem;">User</th>
+                    <th class="py-3 text-secondary text-uppercase" style="font-size: 0.75rem;">Contact</th>
+                    <th class="py-3 text-secondary text-uppercase" style="font-size: 0.75rem;">Status</th>
+                    <th class="py-3 text-secondary text-uppercase" style="font-size: 0.75rem;">Role</th>
+                    <th class="py-3 text-secondary text-uppercase" style="font-size: 0.75rem;">Joined</th>
+                    <th class="px-4 py-3 text-secondary text-uppercase text-end" style="font-size: 0.75rem;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model?.content != null && Model.content.Any())
+                {
+                    @foreach (var user in Model.content)
+                    {
+                        <tr>
+                            <td class="px-4 py-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-squircle bg-primary-subtle text-primary me-3" style="width: 40px; height: 40px;">
+                                        @(string.IsNullOrEmpty(user.fullName) ? "U" : user.fullName.Substring(0, 1).ToUpper())
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark">@user.fullName</div>
+                                        <div class="small text-muted">ID: @user.id</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3">
+                                <div><i class="fas fa-envelope text-muted me-1"></i> @user.email</div>
+                                @if (!string.IsNullOrEmpty(user.phone))
+                                {
+                                    <div class="small"><i class="fas fa-phone text-muted me-1"></i> @user.phone</div>
+                                }
+                            </td>
+                            <td class="py-3">
+                                @if (user.isActive)
+                                {
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill">Banned</span>
+                                }
+                                
+                                @if (user.isVerified)
+                                {
+                                    <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill ms-1">Verified</span>
+                                }
+                            </td>
+                            <td class="py-3">
+                                <span class="badge bg-dark rounded-pill">@user.role</span>
+                            </td>
+                            <td class="py-3 text-muted small">
+                                @user.createdAt.ToString("MMM dd, yyyy")
+                            </td>
+                            <td class="px-4 py-3 text-end">
+                                <button class="btn btn-sm btn-outline-danger rounded-pill px-3">Suspend</button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <i class="fas fa-users fs-1 mb-3 opacity-25"></i>
+                            <h5>No Users Found</h5>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

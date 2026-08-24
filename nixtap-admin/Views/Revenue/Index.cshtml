@@ -1,0 +1,99 @@
+@model nixtap_admin.Services.Api.AdminPaymentsResponse
+@{
+    ViewData["Title"] = "Revenue & Payments";
+    Layout = "_AdminLayout";
+    var subscriptions = ViewBag.Subscriptions as List<nixtap_admin.Services.Api.AdminSubscriptionDto>;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold text-dark m-0">Revenue & Payments</h1>
+        <p class="text-muted m-0">Track all Razorpay transactions and active subscriptions.</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-8">
+        <div class="card premium-card overflow-hidden h-100">
+            <div class="card-header bg-white border-0 p-4 pb-0 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold m-0">Recent Transactions</h5>
+                <span class="badge bg-primary rounded-pill">Total: @Model?.total</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="px-4 py-3 text-secondary text-uppercase" style="font-size: 0.75rem;">Payment ID</th>
+                                <th class="py-3 text-secondary text-uppercase" style="font-size: 0.75rem;">User</th>
+                                <th class="py-3 text-secondary text-uppercase" style="font-size: 0.75rem;">Amount</th>
+                                <th class="py-3 text-secondary text-uppercase" style="font-size: 0.75rem;">Status</th>
+                                <th class="py-3 text-secondary text-uppercase" style="font-size: 0.75rem;">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model?.data != null && Model.data.Any())
+                            {
+                                @foreach (var payment in Model.data)
+                                {
+                                    <tr>
+                                        <td class="px-4 py-3 fw-bold text-dark font-monospace small">@payment.id</td>
+                                        <td class="py-3 text-muted">@payment.userEmail</td>
+                                        <td class="py-3 fw-bold text-success">@payment.amount @payment.currency</td>
+                                        <td class="py-3">
+                                            @if (payment.status == nixtap_admin.Services.Api.PaymentStatus.Success)
+                                            {
+                                                <span class="badge bg-success-subtle text-success rounded-pill">Success</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger-subtle text-danger rounded-pill">@payment.status.ToString()</span>
+                                            }
+                                        </td>
+                                        <td class="py-3 text-muted small">@payment.createdAt.ToString("MMM dd, yyyy HH:mm")</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center py-5 text-muted">No transactions found.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card premium-card h-100">
+            <div class="card-header bg-white border-0 p-4 pb-0">
+                <h5 class="fw-bold m-0">Recent Subscriptions</h5>
+            </div>
+            <div class="card-body p-4">
+                @if (subscriptions != null && subscriptions.Any())
+                {
+                    <div class="d-flex flex-column gap-3">
+                        @foreach (var sub in subscriptions)
+                        {
+                            <div class="p-3 bg-light rounded-4 border">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fw-bold text-dark">@sub.planType Plan</span>
+                                    <span class="badge bg-primary-subtle text-primary rounded-pill">@sub.status</span>
+                                </div>
+                                <div class="small text-muted">User ID: @sub.userId</div>
+                                <div class="small text-muted">Valid till: @sub.endDate.ToString("MMM dd, yyyy")</div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4 text-muted">No active subscriptions.</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

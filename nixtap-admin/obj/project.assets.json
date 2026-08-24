@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\NixtapFinal3\\nixtap-admin\\nixtap-admin.csproj",
+      "projectUniqueName": "D:\\NixtapFinal3\\NixtapFinal3\\nixtap-admin\\nixtap-admin.csproj",
       "projectName": "nixtap-admin",
-      "projectPath": "D:\\NixtapFinal3\\nixtap-admin\\nixtap-admin.csproj",
+      "projectPath": "D:\\NixtapFinal3\\NixtapFinal3\\nixtap-admin\\nixtap-admin.csproj",
       "packagesPath": "C:\\Users\\Swapnil\\.nuget\\packages\\",
-      "outputPath": "D:\\NixtapFinal3\\nixtap-admin\\obj\\",
+      "outputPath": "D:\\NixtapFinal3\\NixtapFinal3\\nixtap-admin\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
