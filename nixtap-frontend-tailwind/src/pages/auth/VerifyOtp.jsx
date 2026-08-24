@@ -28,7 +28,7 @@ export default function VerifyOtp() {
     try {
       await authApi.verifyOtp({ email, otp });
       setSuccess('Email verified successfully! You can now log in.');
-      setTimeout(() => navigate('/login'), 2000);
+      setTimeout(() => navigate('/login', { replace: true }), 2000);
     } catch (err) {
       setError(err.response?.data?.message || 'Verification failed. Invalid OTP.');
     } finally {

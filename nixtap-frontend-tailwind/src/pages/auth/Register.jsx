@@ -43,7 +43,7 @@ export default function Register() {
     try {
       await register({ fullName: name, email, password });
       // The backend requires OTP verification before logging in
-      navigate(`/verify-otp?email=${encodeURIComponent(email)}`);
+      navigate(`/verify-otp?email=${encodeURIComponent(email)}`, { replace: true });
     } catch (err) {
       console.error("Registration failed", err);
     }

@@ -47,20 +47,29 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+const GuestRoute = ({ children }) => {
+  const { isAuthenticated } = useAuthStore();
+  const token = localStorage.getItem('nixtap_token');
+  if (isAuthenticated || token) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  return children;
+};
+
 function App() {
   return (
     <ThemeProvider>
       <Router>
         <Routes>
           {/* Public Routes */}
-          <Route path="/" element={<Landing />} />
+          <Route path="/" element={<GuestRoute><Landing /></GuestRoute>} />
           <Route path="/c/:cardId" element={<PublicCard />} />
           
           {/* Auth Routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/verify-otp" element={<VerifyOtp />} />
+          <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
+          <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
+          <Route path="/forgot-password" element={<GuestRoute><ForgotPassword /></GuestRoute>} />
+          <Route path="/verify-otp" element={<GuestRoute><VerifyOtp /></GuestRoute>} />
 
           {/* Protected App Routes */}
           <Route path="/dashboard" element={
