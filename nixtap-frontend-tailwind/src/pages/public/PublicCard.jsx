@@ -93,6 +93,9 @@ export default function PublicCard() {
       try {
         const data = await cardApi.getPublicCard(cardId);
         setCard(data);
+        if (data?.fullName || data?.title) {
+          document.title = `${data.fullName || data.title} - Nixtap Digital Card`;
+        }
         
         // Fetch feedbacks
         try {
