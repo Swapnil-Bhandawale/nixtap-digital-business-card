@@ -16,7 +16,14 @@ namespace nixtap_admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login() => View();
+        public IActionResult Login()
+        {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+            return View();
+        }
 
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
