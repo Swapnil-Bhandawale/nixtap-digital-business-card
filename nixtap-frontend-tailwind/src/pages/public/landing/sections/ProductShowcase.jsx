@@ -43,7 +43,7 @@ export default function ProductShowcase() {
                </div>
                <div className="flex-1 max-w-md h-6 sm:h-8 bg-ink-900 rounded-md border border-ink-800 flex items-center justify-center">
                  <span className="text-[11px] sm:text-[12px] text-cloud-500 flex items-center gap-2">
-                   <LockIcon /> app.nixtap.com
+                   <LockIcon /> app.nixtap.online
                  </span>
                </div>
              </div>

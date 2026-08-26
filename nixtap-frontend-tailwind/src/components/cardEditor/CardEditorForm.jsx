@@ -351,7 +351,7 @@ export default function CardEditorForm({ mode = 'create', cardId = null, initial
           <Field label="Custom URL" className="mt-3">
             <div className="flex items-center bg-[#f8f9fc] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-[10px] overflow-hidden focus-within:border-blue-500/60">
               <span className="px-2.5 py-2.5 text-[11px] text-slate-500 dark:text-slate-400 border-r border-black/10 dark:border-white/10 whitespace-nowrap">
-                nixtap.com/c/
+                nixtap.online/c/
               </span>
               <input
                 value={form.slug}

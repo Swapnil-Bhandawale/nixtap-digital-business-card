@@ -317,7 +317,7 @@ export default function Dashboard() {
                       <button onClick={() => navigate(`/dashboard/cards/${card.id}/edit`)} className="flex-1 py-2 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors text-slate-800 dark:text-slate-200 border border-slate-200/50 dark:border-slate-600/50">
                         Edit
                       </button>
-                      <button onClick={() => window.open(`https://nixtap.com/c/${card.customSlug || card.id}`, '_blank')} className="p-2 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-colors border border-slate-200/50 dark:border-slate-600/50">
+                      <button onClick={() => window.open(`https://nixtap.online/c/${card.customSlug || card.id}`, '_blank')} className="p-2 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-colors border border-slate-200/50 dark:border-slate-600/50">
                         <ExternalLink className="w-4 h-4" />
                       </button>
                     </div>

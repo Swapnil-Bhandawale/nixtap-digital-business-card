@@ -9,7 +9,7 @@ export default function ShareDialog({
   onClose = () => {},
 }) {
   const [copied, setCopied] = useState(false);
-  const PUBLIC_CARD_BASE = 'https://nixtap.com/c/';
+  const PUBLIC_CARD_BASE = 'https://nixtap.online/c/';
 
   if (!card) return null;
 

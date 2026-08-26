@@ -13,7 +13,7 @@ import ShareDialog from '../../components/ui/ShareDialog';
 import { useAuthStore } from '../../store/authStore';
 
 const SKELETON_COUNT = 3;
-const PUBLIC_CARD_BASE = 'https://nixtap.com/c/';
+const PUBLIC_CARD_BASE = 'https://nixtap.online/c/';
 
 export default function MyCards() {
   const navigate = useNavigate();

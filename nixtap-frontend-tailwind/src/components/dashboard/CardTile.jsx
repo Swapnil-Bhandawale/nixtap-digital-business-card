@@ -56,7 +56,7 @@ export default function CardTile({
         <div className="min-w-0 flex-1">
           <h3 className="text-[15px] font-bold text-slate-900 dark:text-slate-100 truncate">{fullName}</h3>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">{jobTitle}</p>
-          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 truncate">nixtap.com/c/{customSlug || card.id}</p>
+          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 truncate">nixtap.online/c/{customSlug || card.id}</p>
           <div className="flex items-center gap-3 mt-2 text-xs text-slate-500 dark:text-slate-400">
             <span className="inline-flex items-center gap-1">
               <Eye className="w-3.5 h-3.5" /> {views.toLocaleString()}
