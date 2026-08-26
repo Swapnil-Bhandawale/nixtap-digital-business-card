@@ -114,7 +114,10 @@ public class WebhookController : ControllerBase
     private bool VerifyWebhookSignature(string payload, string signature)
     {
         if (string.IsNullOrEmpty(_webhookSecret))
-            return true; // allow bypass if secret not configured, for dev ONLY
+        {
+            _logger.LogCritical("Webhook secret is not configured. Rejecting webhook for security.");
+            return false;
+        }
 
         using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(_webhookSecret));
         var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(payload));
@@ -123,3 +126,5 @@ public class WebhookController : ControllerBase
         return hex == signature.ToLowerInvariant();
     }
 }
+
+

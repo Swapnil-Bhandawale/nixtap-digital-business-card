@@ -74,5 +74,6 @@ logging:
 
 resend:
   api:
-    key: ${RESEND_API_KEY:re_tKd7z6ru_4boj1xUUhkhVJneAiTFwm1F}
+    key: ${RESEND_API_KEY:}
+
 
