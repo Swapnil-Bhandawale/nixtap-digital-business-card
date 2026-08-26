@@ -1,0 +1,169 @@
+version: "3.8"
+
+services:
+  # ── Redis ────────────────────────────────────────────────
+  redis:
+    image: redis:7.0-alpine
+    container_name: nixtap-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ── MySQL ────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: nixtap-mysql
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_HOST: "%"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/01_auth_db.sql:/docker-entrypoint-initdb.d/01_auth_db.sql
+      - ./database/02_card_db.sql:/docker-entrypoint-initdb.d/02_card_db.sql
+      - ./database/03_engagement_db.sql:/docker-entrypoint-initdb.d/03_engagement_db.sql
+      - ./database/04_analytics_db.sql:/docker-entrypoint-initdb.d/04_analytics_db.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Auth Service ─────────────────────────────────────────
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: nixtap-auth-service
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/nixtap_auth_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      JWT_SECRET: nixtap-dev-only-secret-key-change-this-before-deployment-2026
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # ── Card Service ─────────────────────────────────────────
+  card-service:
+    build:
+      context: ./card-service
+      dockerfile: Dockerfile
+    container_name: nixtap-card-service
+    restart: unless-stopped
+    ports:
+      - "8082:8082"
+    environment:
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/nixtap_card_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ── Engagement Service ───────────────────────────────────
+  engagement-service:
+    build:
+      context: ./engagement-service
+      dockerfile: Dockerfile
+    container_name: nixtap-engagement-service
+    restart: unless-stopped
+    ports:
+      - "8083:8083"
+    environment:
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/nixtap_engagement_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ── Analytics Service ────────────────────────────────────
+  analytics-service:
+    build:
+      context: ./analytics-service
+      dockerfile: Dockerfile
+    container_name: nixtap-analytics-service
+    restart: unless-stopped
+    ports:
+      - "8084:8084"
+    environment:
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/nixtap_analytics_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ── API Gateway ──────────────────────────────────────────
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: nixtap-api-gateway
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      JWT_SECRET: nixtap-dev-only-secret-key-change-this-before-deployment-2026
+      AUTH_SERVICE_URL: http://auth-service:8081
+      CARD_SERVICE_URL: http://card-service:8082
+      ENGAGEMENT_SERVICE_URL: http://engagement-service:8083
+      ANALYTICS_SERVICE_URL: http://analytics-service:8084
+      PAYMENT_SERVICE_URL: http://payment-service:8080
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - auth-service
+      - card-service
+      - engagement-service
+      - analytics-service
+      - payment-service
+      - redis
+
+  # ── Payment Service ──────────────────────────────────────
+  payment-service:
+    build:
+      context: ../../payment-service-dotnet/payment-service-dotnet
+      dockerfile: Dockerfile
+    container_name: nixtap-payment-service
+    restart: unless-stopped
+    ports:
+      - "8085:8080"
+    environment:
+      ConnectionStrings__PaymentDb: "Server=mysql;Port=3306;Database=payment_service_dotnet_db;User=root;Password=root;"
+      DigitalCardService__BaseUrl: "http://auth-service:8081"
+      Razorpay__KeyId: ${RAZORPAY_KEY_ID:-rzp_test_TSkYunU5nFRpuG}
+      Razorpay__KeySecret: ${RAZORPAY_KEY_SECRET:-6PswM7Qc5l9dwEdjBkmILTbb}
+      InternalApiKey: ${INTERNAL_API_KEY:-change-me-internal-key}
+      URLS: "http://+:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql_data:

@@ -1,0 +1,1 @@
+ALTER TABLE cards ADD COLUMN theme VARCHAR(50);

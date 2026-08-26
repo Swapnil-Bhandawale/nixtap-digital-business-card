@@ -1,0 +1,125 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        # Auth service — public, no JWT validation needed
+        - id: auth-service
+          uri: ${AUTH_SERVICE_URL:http://localhost:8081}
+          predicates:
+            - Path=/api/v1/auth/**
+          filters:
+            - StripPrefix=0
+
+        # Public engagement (leads, appointments, feedback, views, shares)
+        - id: public-engagement
+          uri: ${ENGAGEMENT_SERVICE_URL:http://localhost:8083}
+          predicates:
+            - Path=/api/v1/public/cards/*/leads,/api/v1/public/cards/*/appointments,/api/v1/public/cards/*/feedback
+          filters:
+            - StripPrefix=0
+
+        # Public analytics (views, shares recording)
+        - id: public-analytics
+          uri: ${ANALYTICS_SERVICE_URL:http://localhost:8084}
+          predicates:
+            - Path=/api/v1/public/cards/*/views,/api/v1/public/cards/*/shares
+          filters:
+            - StripPrefix=0
+
+        # Public card routes - no JWT needed
+        - id: public-cards
+          uri: ${CARD_SERVICE_URL:http://localhost:8082}
+          predicates:
+            - Path=/api/v1/public/cards/**
+          filters:
+            - StripPrefix=0
+
+        # Engagement service — protected
+        - id: engagement-service
+          uri: ${ENGAGEMENT_SERVICE_URL:http://localhost:8083}
+          predicates:
+            - Path=/api/v1/cards/*/leads/**,/api/v1/cards/*/appointments/**,/api/v1/cards/*/feedback/**
+          filters:
+            - StripPrefix=0
+            - name: JwtAuthFilter
+
+        # Analytics service — protected
+        - id: analytics-service
+          uri: ${ANALYTICS_SERVICE_URL:http://localhost:8084}
+          predicates:
+            - Path=/api/v1/cards/*/analytics/**
+          filters:
+            - StripPrefix=0
+            - name: JwtAuthFilter
+
+        # Card service — protected
+        - id: card-service
+          uri: ${CARD_SERVICE_URL:http://localhost:8082}
+          predicates:
+            - Path=/api/v1/cards/**
+          filters:
+            - StripPrefix=0
+            - name: JwtAuthFilter
+
+        # Template service — public/protected
+        - id: template-service
+          uri: ${CARD_SERVICE_URL:http://localhost:8082}
+          predicates:
+            - Path=/api/v1/templates/**
+          filters:
+            - StripPrefix=0
+
+        # Admin user management — JWT required, role enforced at controller
+        - id: admin-users
+          uri: ${AUTH_SERVICE_URL:http://localhost:8081}
+          predicates:
+            - Path=/api/v1/admin/users/**
+          filters:
+            - StripPrefix=0
+            - name: JwtAuthFilter
+
+        # Authenticated user routes (profile, start trial)
+        - id: users
+          uri: ${AUTH_SERVICE_URL:http://localhost:8081}
+          predicates:
+            - Path=/api/v1/users/**
+          filters:
+            - StripPrefix=0
+            - name: JwtAuthFilter
+
+        # Payment service — protected
+        - id: payment-service
+          uri: ${PAYMENT_SERVICE_URL:http://localhost:8085}
+          predicates:
+            - Path=/api/v1/payment/**
+          filters:
+            - StripPrefix=0
+            - name: JwtAuthFilter
+
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:5173"
+              - "http://localhost:3000"
+              - "http://localhost:3001"
+              - "https://nixtap.online"
+              - "https://www.nixtap.online"
+              - "https://nixtap-digital-business-card.vercel.app"
+            allowedMethods: ["GET","POST","PUT","DELETE","OPTIONS","PATCH"]
+            allowedHeaders: ["*"]
+            allowCredentials: true
+
+nixtap:
+  jwt:
+    secret: ${JWT_SECRET:nixtap-dev-only-secret-key-change-this-before-deployment-2026}
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG

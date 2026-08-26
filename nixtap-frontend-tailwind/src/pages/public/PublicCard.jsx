@@ -368,7 +368,25 @@ export default function PublicCard() {
                   <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(card.shareableUrl || window.location.href)}`} alt="QR Code" className="w-full h-full object-cover rounded-lg" />
                 </div>
                 <p className="text-sm font-semibold text-slate-800">{card.fullName}</p>
-                <p className="text-xs text-slate-500 mt-1 truncate max-w-full px-2">{card.shareableUrl || window.location.href}</p>
+                <p className="text-xs text-slate-500 mt-1 truncate max-w-full px-2 mb-6">{card.shareableUrl || window.location.href}</p>
+                <div className="flex gap-3 w-full">
+                  <Button onClick={() => {
+                    navigator.clipboard.writeText(card.shareableUrl || window.location.href);
+                    alert("Link copied to clipboard!");
+                  }} className="flex-1 py-2 text-sm font-semibold rounded-xl bg-gray-100 text-gray-800 hover:bg-gray-200">
+                    Copy Link
+                  </Button>
+                  {navigator.share && (
+                    <Button onClick={() => {
+                      navigator.share({
+                        title: `${card.fullName}'s Digital Business Card`,
+                        url: card.shareableUrl || window.location.href
+                      }).catch(console.error);
+                    }} className="flex-1 py-2 text-sm font-semibold rounded-xl text-white" style={{ backgroundColor: themeColor }}>
+                      Share
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import SectionTitle from "../components/section-title";
 import { MoreHorizontal, Phone, Mail, MapPin, Globe, Briefcase, ArrowUpRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const profiles = [
     {
@@ -202,9 +203,9 @@ export default function OurLatestCreations() {
             </div>
             
             <div className="mt-8">
-                <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-3.5 rounded-full transition-colors shadow-lg shadow-blue-600/30">
+                <Link to="/register" className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-3.5 rounded-full transition-colors shadow-lg shadow-blue-600/30">
                     Create your card
-                </button>
+                </Link>
             </div>
         </section>
     );

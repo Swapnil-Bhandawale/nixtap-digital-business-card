@@ -28,15 +28,15 @@ import Premium from './pages/app/Premium';
 import Settings from './pages/app/Settings';
 
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, isLoading, fetchUser } = useAuthStore();
+  const { isAuthenticated, isLoading, fetchUser, user } = useAuthStore();
   
   useEffect(() => {
-    if (localStorage.getItem('nixtap_token') && !isAuthenticated) {
+    if (localStorage.getItem('nixtap_token') && !user) {
       fetchUser();
     }
-  }, []);
+  }, [user, fetchUser]);
 
-  if (isLoading) {
+  if (isLoading || (localStorage.getItem('nixtap_token') && !user)) {
     return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0f0f13] text-brand-600">Loading...</div>;
   }
 
@@ -89,6 +89,9 @@ function App() {
             <Route path="premium" element={<Premium />} />
             <Route path="settings" element={<Settings />} />
           </Route>
+
+          {/* Catch-all 404 route */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
     </ThemeProvider>
