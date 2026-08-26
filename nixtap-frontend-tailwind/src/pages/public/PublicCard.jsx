@@ -91,7 +91,8 @@ export default function PublicCard() {
   useEffect(() => {
     const fetchCard = async () => {
       try {
-        const data = await cardApi.getPublicCard(cardId);
+        const res = await cardApi.getPublicCard(cardId);
+        const data = res?.data || res;
         setCard(data);
         if (data?.fullName || data?.title) {
           document.title = `${data.fullName || data.title} - Nixtap Digital Card`;
