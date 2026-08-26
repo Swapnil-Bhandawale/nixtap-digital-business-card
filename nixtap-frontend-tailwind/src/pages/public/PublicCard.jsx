@@ -87,6 +87,12 @@ export default function PublicCard() {
   
   // Custom theme colors for buttons based on card theme
   const themeColor = card?.themeColor || card?.theme || '#2563eb';
+  const accentColor = React.useMemo(() => {
+    if (!themeColor) return '#3b82f6';
+    if (themeColor.startsWith('#')) return themeColor;
+    const match = themeColor.match(/#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})/);
+    return match ? match[0] : '#3b82f6';
+  }, [themeColor]);
 
   useEffect(() => {
     const fetchCard = async () => {
@@ -124,7 +130,7 @@ export default function PublicCard() {
       <div className="w-full max-w-[430px] min-h-screen bg-white shadow-2xl relative overflow-y-auto pb-20">
         
         {/* Cover Photo */}
-        <div className="relative h-48 w-full bg-gray-200" style={{ backgroundColor: card.themeColor || card.theme || '#8b5cf6' }}>
+        <div className="relative h-48 w-full bg-gray-200" style={{ background: card.themeColor || card.theme || '#8b5cf6' }}>
           {card.coverImageUrl && (
             <img src={card.coverImageUrl} className="w-full h-full object-cover" alt="Cover" />
           )}
@@ -141,7 +147,7 @@ export default function PublicCard() {
           
           {/* Avatar with Logo */}
           <div className="relative mb-3 inline-block">
-            <div className="w-[124px] h-[124px] rounded-full border-[5px] border-white shadow-[0_8px_25px_rgba(0,0,0,0.1)] overflow-hidden bg-white flex items-center justify-center text-4xl font-bold" style={{ color: themeColor }}>
+            <div className="w-[124px] h-[124px] rounded-full border-[5px] border-white shadow-[0_8px_25px_rgba(0,0,0,0.1)] overflow-hidden bg-white flex items-center justify-center text-4xl font-bold" style={{ color: accentColor }}>
               {card.profileImageUrl ? (
                 <img src={card.profileImageUrl} className="w-full h-full object-cover" alt="Avatar" />
               ) : (
@@ -170,10 +176,10 @@ export default function PublicCard() {
 
           {/* Primary Action Buttons */}
           <div className="w-full flex gap-3 mb-8">
-            <button className="flex-1 py-3.5 rounded-full text-white font-bold text-[15px] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 transform active:scale-[0.98] shadow-lg flex items-center justify-center gap-2" style={{ backgroundColor: themeColor, shadowColor: themeColor }}>
+            <button className="flex-1 py-3.5 rounded-full text-white font-bold text-[15px] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 transform active:scale-[0.98] shadow-lg flex items-center justify-center gap-2" style={{ background: themeColor, shadowcolor: accentColor }}>
               <Download className="w-4 h-4" /> Save Contact
             </button>
-            <button onClick={() => setIsApptOpen(true)} className="w-[52px] h-[52px] rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all transform active:scale-[0.98] shadow-sm group" style={{ color: themeColor }}>
+            <button onClick={() => setIsApptOpen(true)} className="w-[52px] h-[52px] rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all transform active:scale-[0.98] shadow-sm group" style={{ color: accentColor }}>
               <Calendar className="w-5 h-5 transition-colors" />
             </button>
           </div>
@@ -229,7 +235,7 @@ export default function PublicCard() {
               )}
               <button onClick={() => setIsLeadOpen(true)} className="w-full flex flex-col items-center justify-center bg-white border border-slate-100 hover:border-blue-200 hover:shadow-[0_8px_20px_rgb(0,0,0,0.04)] transition-all p-5 rounded-[24px] shadow-[0_2px_10px_rgba(0,0,0,0.03)] group gap-3 text-center">
                 <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-500 transition-colors shrink-0 shadow-inner">
-                  <BookOpen className="w-5 h-5 group-hover:text-white transition-colors" style={{ color: themeColor }} />
+                  <BookOpen className="w-5 h-5 group-hover:text-white transition-colors" style={{ color: accentColor }} />
                 </div>
                 <span className="font-semibold text-slate-800 text-[13px] leading-tight">Exchange<br/>Contacts</span>
               </button>
@@ -312,7 +318,7 @@ export default function PublicCard() {
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 mb-2">Details Sent!</h3>
                     <p className="text-gray-500 mb-8 leading-relaxed">{card.fullName} has received your information.</p>
-                    <Button onClick={() => { setIsLeadOpen(false); setLeadState('idle'); }} className="w-full h-12 text-base font-semibold rounded-xl" style={{ backgroundColor: card.themeColor || '#8b5cf6', color: '#fff' }}>
+                    <Button onClick={() => { setIsLeadOpen(false); setLeadState('idle'); }} className="w-full h-12 text-base font-semibold rounded-xl" style={{ background: card.themeColor || '#8b5cf6', color: '#fff' }}>
                       Done
                     </Button>
                   </div>
@@ -344,7 +350,7 @@ export default function PublicCard() {
                       </div>
                     </div>
                     <div className="p-6 border-t border-gray-100 bg-gray-50 shrink-0">
-                      <Button type="submit" disabled={leadState === 'submitting'} className="w-full h-12 text-base font-semibold rounded-xl shadow-md hover:shadow-lg transition-all disabled:opacity-70" style={{ backgroundColor: card.themeColor || '#8b5cf6', color: '#fff' }}>
+                      <Button type="submit" disabled={leadState === 'submitting'} className="w-full h-12 text-base font-semibold rounded-xl shadow-md hover:shadow-lg transition-all disabled:opacity-70" style={{ background: card.themeColor || '#8b5cf6', color: '#fff' }}>
                         {leadState === 'submitting' ? 'Sending...' : 'Send Details'}
                       </Button>
                     </div>
@@ -383,7 +389,7 @@ export default function PublicCard() {
                         title: `${card.fullName}'s Digital Business Card`,
                         url: card.shareableUrl || window.location.href
                       }).catch(console.error);
-                    }} className="flex-1 py-2 text-sm font-semibold rounded-xl text-white" style={{ backgroundColor: themeColor }}>
+                    }} className="flex-1 py-2 text-sm font-semibold rounded-xl text-white" style={{ background: themeColor }}>
                       Share
                     </Button>
                   )}
@@ -414,7 +420,7 @@ export default function PublicCard() {
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h3>
                     <p className="text-gray-500 mb-8 leading-relaxed">Your feedback has been submitted successfully.</p>
-                    <Button onClick={() => { setIsFeedbackOpen(false); setFeedbackState('idle'); }} className="w-full h-12 text-base font-semibold rounded-xl" style={{ backgroundColor: themeColor, color: '#fff' }}>
+                    <Button onClick={() => { setIsFeedbackOpen(false); setFeedbackState('idle'); }} className="w-full h-12 text-base font-semibold rounded-xl" style={{ background: themeColor, color: '#fff' }}>
                       Done
                     </Button>
                   </div>
@@ -444,7 +450,7 @@ export default function PublicCard() {
                     </div>
                   </div>
                   <div className="p-6 border-t border-gray-100 bg-gray-50 shrink-0">
-                    <Button type="submit" disabled={feedbackState === 'submitting'} className="w-full h-12 text-base font-semibold rounded-xl text-white shadow-md hover:opacity-90 transition-all disabled:opacity-70" style={{ backgroundColor: themeColor }}>
+                    <Button type="submit" disabled={feedbackState === 'submitting'} className="w-full h-12 text-base font-semibold rounded-xl text-white shadow-md hover:opacity-90 transition-all disabled:opacity-70" style={{ background: themeColor }}>
                       {feedbackState === 'submitting' ? 'Submitting...' : 'Submit Feedback'}
                     </Button>
                   </div>
@@ -476,7 +482,7 @@ export default function PublicCard() {
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 mb-2">Request Sent!</h3>
                     <p className="text-gray-500 mb-8 leading-relaxed">Your appointment request is pending confirmation. {card.fullName} will review it shortly.</p>
-                    <Button onClick={() => { setIsApptOpen(false); setApptState('idle'); }} className="w-full h-12 text-base font-semibold rounded-xl" style={{ backgroundColor: card.themeColor || '#8b5cf6', color: '#fff' }}>
+                    <Button onClick={() => { setIsApptOpen(false); setApptState('idle'); }} className="w-full h-12 text-base font-semibold rounded-xl" style={{ background: card.themeColor || '#8b5cf6', color: '#fff' }}>
                       Done
                     </Button>
                   </div>
@@ -518,7 +524,7 @@ export default function PublicCard() {
                       </div>
                     </div>
                     <div className="p-6 border-t border-gray-100 bg-gray-50 shrink-0">
-                      <Button type="submit" disabled={apptState === 'submitting'} className="w-full h-12 text-base font-semibold rounded-xl shadow-md hover:shadow-lg transition-all disabled:opacity-70 disabled:hover:shadow-md" style={{ backgroundColor: card.themeColor || '#8b5cf6', color: '#fff' }}>
+                      <Button type="submit" disabled={apptState === 'submitting'} className="w-full h-12 text-base font-semibold rounded-xl shadow-md hover:shadow-lg transition-all disabled:opacity-70 disabled:hover:shadow-md" style={{ background: card.themeColor || '#8b5cf6', color: '#fff' }}>
                         {apptState === 'submitting' ? 'Sending Request...' : 'Send Request'}
                       </Button>
                     </div>
