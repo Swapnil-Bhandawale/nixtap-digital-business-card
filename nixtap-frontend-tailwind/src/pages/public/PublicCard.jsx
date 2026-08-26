@@ -122,6 +122,29 @@ export default function PublicCard() {
     fetchCard();
   }, [cardId]);
 
+  const handleSaveContact = () => {
+    const vcard = `BEGIN:VCARD
+VERSION:3.0
+FN:${card.fullName || ''}
+ORG:${card.company || ''}
+TITLE:${card.jobTitle || ''}
+TEL;TYPE=CELL:${card.phone || ''}
+EMAIL;TYPE=PREF,INTERNET:${card.email || ''}
+URL:${card.shareableUrl || window.location.href}
+END:VCARD`;
+
+    const blob = new Blob([vcard], { type: 'text/vcard' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = + 'contact.vcf';
+    if(card.fullName) { a.download = card.fullName.replace(/\s+/g, '_') + '.vcf'; }
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  };
+
   if (isLoading) return <div className="min-h-screen flex items-center justify-center bg-gray-50">Loading profile...</div>;
   if (!card) return <div className="min-h-screen flex items-center justify-center">Card not found</div>;
 
@@ -176,7 +199,7 @@ export default function PublicCard() {
 
           {/* Primary Action Buttons */}
           <div className="w-full flex gap-3 mb-8">
-            <button className="flex-1 py-3.5 rounded-full text-white font-bold text-[15px] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 transform active:scale-[0.98] shadow-lg flex items-center justify-center gap-2" style={{ background: themeColor, shadowcolor: accentColor }}>
+            <button onClick={handleSaveContact} className="flex-1 py-3.5 rounded-full text-white font-bold text-[15px] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 transform active:scale-[0.98] shadow-lg flex items-center justify-center gap-2" style={{ background: themeColor, shadowcolor: accentColor }}>
               <Download className="w-4 h-4" /> Save Contact
             </button>
             <button onClick={() => setIsApptOpen(true)} className="w-[52px] h-[52px] rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all transform active:scale-[0.98] shadow-sm group" style={{ color: accentColor }}>
@@ -538,3 +561,6 @@ export default function PublicCard() {
     </div>
   );
 }
+
+
+
