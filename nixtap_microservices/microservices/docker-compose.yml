@@ -42,6 +42,7 @@ services:
     environment:
       DB_USERNAME: root
       DB_PASSWORD: root
+      RESEND_API_KEY: re_tKd7z6ru_4boj1xUUhkhVJneAiTFwm1F
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/nixtap_auth_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       JWT_SECRET: nixtap-dev-only-secret-key-change-this-before-deployment-2026
     depends_on:
@@ -58,6 +59,7 @@ services:
     environment:
       DB_USERNAME: root
       DB_PASSWORD: root
+      RESEND_API_KEY: re_tKd7z6ru_4boj1xUUhkhVJneAiTFwm1F
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/nixtap_card_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       REDIS_HOST: redis
       REDIS_PORT: 6379
@@ -78,6 +80,7 @@ services:
     environment:
       DB_USERNAME: root
       DB_PASSWORD: root
+      RESEND_API_KEY: re_tKd7z6ru_4boj1xUUhkhVJneAiTFwm1F
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/nixtap_engagement_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       REDIS_HOST: redis
       REDIS_PORT: 6379
@@ -98,6 +101,7 @@ services:
     environment:
       DB_USERNAME: root
       DB_PASSWORD: root
+      RESEND_API_KEY: re_tKd7z6ru_4boj1xUUhkhVJneAiTFwm1F
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/nixtap_analytics_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       REDIS_HOST: redis
       REDIS_PORT: 6379
@@ -153,5 +157,7 @@ services:
 
 volumes:
   mysql_data:
+
+
 
 
