@@ -3,6 +3,7 @@ package com.nixtap.auth.service.impl;
 import com.nixtap.auth.dto.request.*;
 import com.nixtap.auth.entity.User;
 import com.nixtap.auth.repository.UserRepository;
+import com.nixtap.auth.service.EmailService;
 import com.nixtap.auth.service.OtpService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +19,7 @@ public class OtpServiceImpl implements OtpService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
     private final SecureRandom secureRandom = new SecureRandom();
 
     private String generateOtp() {
@@ -38,6 +40,7 @@ public class OtpServiceImpl implements OtpService {
         // In dev mode, we need to return this to the frontend.
         // For now, assume this is handled in a way that doesn't expose it to production logs.
         System.out.println("DEV OTP for " + email + ": " + otp);
+        emailService.sendOtpEmail(email, otp, "Login/Registration");
     }
 
     @Override
@@ -77,6 +80,7 @@ public class OtpServiceImpl implements OtpService {
         user.setOtpExpiresAt(LocalDateTime.now().plusMinutes(15));
         userRepository.save(user);
         System.out.println("DEV Forgot Password OTP for " + request.getEmail() + ": " + otp);
+        emailService.sendOtpEmail(request.getEmail(), otp, "Password Reset");
     }
 
     @Override
@@ -99,3 +103,5 @@ public class OtpServiceImpl implements OtpService {
         userRepository.save(user);
     }
 }
+
+
