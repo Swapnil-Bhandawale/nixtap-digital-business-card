@@ -21,7 +21,7 @@ export default function PublicCard() {
     e.preventDefault();
     setLeadState('submitting');
     try {
-      await publicApi.submitLead(cardId, {
+      await publicApi.submitLead(card.id, {
         visitorName: leadForm.name,
         visitorEmail: leadForm.email,
         visitorPhone: leadForm.phone,
@@ -43,7 +43,7 @@ export default function PublicCard() {
     setApptState('submitting');
     try {
       const requestedDatetime = new Date(`${apptForm.date}T${apptForm.time}`).toISOString();
-      await publicApi.bookAppointment(cardId, {
+      await publicApi.bookAppointment(card.id, {
         visitorName: apptForm.name,
         visitorEmail: apptForm.email,
         visitorPhone: apptForm.phone,
@@ -66,7 +66,7 @@ export default function PublicCard() {
     e.preventDefault();
     setFeedbackState('submitting');
     try {
-      await publicApi.submitFeedback(cardId, {
+      await publicApi.submitFeedback(card.id, {
         visitorName: feedbackForm.name,
         visitorEmail: feedbackForm.email,
         rating: feedbackForm.rating,
@@ -100,7 +100,7 @@ export default function PublicCard() {
         
         // Fetch feedbacks
         try {
-           const fbs = await publicApi.getFeedbacks(cardId);
+           const fbs = await publicApi.getFeedbacks(data.id);
            setFeedbacks(fbs?.data || []);
         } catch(e) {
            console.log("Feedbacks not found", e);
