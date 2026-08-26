@@ -6,8 +6,6 @@ services:
     image: redis:7.0-alpine
     container_name: nixtap-redis
     restart: unless-stopped
-    ports:
-      - "6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -19,8 +17,6 @@ services:
     image: mysql:8.0
     container_name: nixtap-mysql
     restart: unless-stopped
-    ports:
-      - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_ROOT_HOST: "%"
@@ -43,8 +39,6 @@ services:
       dockerfile: Dockerfile
     container_name: nixtap-auth-service
     restart: unless-stopped
-    ports:
-      - "8081:8081"
     environment:
       DB_USERNAME: root
       DB_PASSWORD: root
@@ -61,8 +55,6 @@ services:
       dockerfile: Dockerfile
     container_name: nixtap-card-service
     restart: unless-stopped
-    ports:
-      - "8082:8082"
     environment:
       DB_USERNAME: root
       DB_PASSWORD: root
@@ -83,8 +75,6 @@ services:
       dockerfile: Dockerfile
     container_name: nixtap-engagement-service
     restart: unless-stopped
-    ports:
-      - "8083:8083"
     environment:
       DB_USERNAME: root
       DB_PASSWORD: root
@@ -105,8 +95,6 @@ services:
       dockerfile: Dockerfile
     container_name: nixtap-analytics-service
     restart: unless-stopped
-    ports:
-      - "8084:8084"
     environment:
       DB_USERNAME: root
       DB_PASSWORD: root
@@ -152,8 +140,6 @@ services:
       dockerfile: Dockerfile
     container_name: nixtap-payment-service
     restart: unless-stopped
-    ports:
-      - "8085:8080"
     environment:
       ConnectionStrings__PaymentDb: "Server=mysql;Port=3306;Database=payment_service_dotnet_db;User=root;Password=root;"
       DigitalCardService__BaseUrl: "http://auth-service:8081"
@@ -167,3 +153,5 @@ services:
 
 volumes:
   mysql_data:
+
+
