@@ -15,6 +15,7 @@ export default function Navbar() {
   const [openMenu, setOpenMenu] = useState(null) // 'products' | 'resources' | null
   const [mobileOpen, setMobileOpen] = useState(false)
   const navRef = useRef(null)
+  const isAuthenticated = !!localStorage.getItem('nixtap_token');
 
   useLockBodyScroll(mobileOpen)
 
@@ -207,21 +208,33 @@ export default function Navbar() {
             </a>
           </div>
 
-          {/* Desktop CTAs */}
+                    {/* Desktop CTAs */}
           <div className="hidden lg:flex items-center gap-3 ml-2">
-            <Link
-              to="/login"
-              className="px-5 py-2.5 text-[14px] font-bold text-ink-900 dark:text-white hover:text-brand-600 bg-cloud-50 dark:bg-slate-800 hover:bg-cloud-100 rounded-full transition-all duration-200"
-            >
-              Log in
-            </Link>
-            <Link 
-              to="/register"
-              className="px-5 py-2.5 text-[14px] font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-md hover:shadow-lg shadow-brand-500/20 rounded-full flex items-center gap-1.5 transition-all duration-200"
-            >
-              Sign up free
-              <ArrowUpRight size={16} strokeWidth={2.5} />
-            </Link>
+            {isAuthenticated ? (
+              <Link
+                to="/dashboard"
+                className="px-5 py-2.5 text-[14px] font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-md hover:shadow-lg shadow-brand-500/20 rounded-full flex items-center gap-1.5 transition-all duration-200"
+              >
+                Go to Dashboard
+                <ArrowUpRight size={16} strokeWidth={2.5} />
+              </Link>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="px-5 py-2.5 text-[14px] font-bold text-ink-900 dark:text-white hover:text-brand-600 bg-cloud-50 dark:bg-slate-800 hover:bg-cloud-100 rounded-full transition-all duration-200"
+                >
+                  Log in
+                </Link>
+                <Link 
+                  to="/register"
+                  className="px-5 py-2.5 text-[14px] font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-md hover:shadow-lg shadow-brand-500/20 rounded-full flex items-center gap-1.5 transition-all duration-200"
+                >
+                  Sign up free
+                  <ArrowUpRight size={16} strokeWidth={2.5} />
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile toggle */}
@@ -300,17 +313,27 @@ export default function Navbar() {
                 Pricing
               </a>
 
-              <div className="flex items-center gap-3 mt-4">
-                <Link to="/login" className="flex-1">
-                  <div className="w-full h-12 flex items-center justify-center text-[15px] font-bold text-ink-900 dark:text-white bg-cloud-50 dark:bg-slate-800 hover:bg-cloud-100 rounded-xl transition-colors">
-                    Log in
-                  </div>
-                </Link>
-                <Link to="/register" className="flex-1">
-                  <div className="w-full h-12 flex items-center justify-center text-[15px] font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-md shadow-brand-500/20 rounded-xl transition-colors">
-                    Sign up free
-                  </div>
-                </Link>
+                            <div className="flex items-center gap-3 mt-4">
+                {isAuthenticated ? (
+                  <Link to="/dashboard" className="flex-1">
+                    <div className="w-full h-12 flex items-center justify-center text-[15px] font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-md shadow-brand-500/20 rounded-xl transition-colors">
+                      Go to Dashboard
+                    </div>
+                  </Link>
+                ) : (
+                  <>
+                    <Link to="/login" className="flex-1">
+                      <div className="w-full h-12 flex items-center justify-center text-[15px] font-bold text-ink-900 dark:text-white bg-cloud-50 dark:bg-slate-800 hover:bg-cloud-100 rounded-xl transition-colors">
+                        Log in
+                      </div>
+                    </Link>
+                    <Link to="/register" className="flex-1">
+                      <div className="w-full h-12 flex items-center justify-center text-[15px] font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-md shadow-brand-500/20 rounded-xl transition-colors">
+                        Sign up free
+                      </div>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>
@@ -319,4 +342,8 @@ export default function Navbar() {
     </header>
   )
 }
+
+
+
+
 

@@ -62,7 +62,7 @@ function App() {
       <Router>
         <Routes>
           {/* Public Routes */}
-          <Route path="/" element={<GuestRoute><Landing /></GuestRoute>} />
+          <Route path="/" element={<Landing />} />
           <Route path="/c/:cardId" element={<PublicCard />} />
           
           {/* Auth Routes */}
@@ -99,3 +99,4 @@ function App() {
 }
 
 export default App;
+
