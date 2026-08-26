@@ -76,7 +76,7 @@ public class CardServiceImpl implements CardService {
     public byte[] generateCardQr(Long cardId) throws Exception {
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new ResourceNotFoundException("Card", "id", cardId));
-        String url = "https://nixtap.com/c/" + (card.getCustomSlug() != null ? card.getCustomSlug() : card.getPublicId());
+        String url = "https://nixtap.online/c/" + (card.getCustomSlug() != null ? card.getCustomSlug() : card.getPublicId());
         return qrCodeGenerator.generate(url);
     }
 

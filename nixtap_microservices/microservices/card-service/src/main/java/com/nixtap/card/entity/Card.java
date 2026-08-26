@@ -28,8 +28,8 @@ public class Card {
     @Column(name = "bio", columnDefinition = "TEXT") private String bio;
     @Column(name = "email", length = 180) private String email;
     @Column(name = "phone", length = 20) private String phone;
-    @Column(name = "profile_image_url", length = 500) private String profileImageUrl;
-    @Column(name = "cover_image_url", length = 500) private String coverImageUrl;
+    @Column(name = "profile_image_url", columnDefinition = "LONGTEXT") private String profileImageUrl;
+    @Column(name = "cover_image_url", columnDefinition = "LONGTEXT") private String coverImageUrl;
 
     @JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
     @Column(name = "custom_fields", columnDefinition = "json")
