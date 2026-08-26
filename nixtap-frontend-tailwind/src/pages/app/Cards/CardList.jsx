@@ -141,7 +141,7 @@ export default function CardList() {
                   </div>
                   <div className="flex space-x-2">
                     <button 
-                      onClick={() => navigator.clipboard.writeText(`http://localhost:3001/c/${card.publicUrl}`)}
+                      onClick={() => navigator.clipboard.writeText(`https://nixtap.online/c/${card.publicUrl}`)}
                       className="p-2 rounded-lg bg-cloud-50 dark:bg-cloud-800 hover:bg-cloud-100 dark:hover:bg-cloud-700 text-cloud-500 dark:text-cloud-400 shadow-sm transition-colors"
                       title="Copy Link"
                     >
@@ -169,3 +169,4 @@ export default function CardList() {
     </div>
   );
 }
+
