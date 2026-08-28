@@ -33,7 +33,7 @@ public class ResendEmailServiceImpl implements EmailService {
             headers.setBearerAuth(resendApiKey);
 
             Map<String, Object> body = new HashMap<>();
-            body.put("from", "Nixtap <onboarding@resend.dev>"); // Will change to support@nixtap.online later
+            body.put("from", "Nixtap <no-reply@nixtap.online>");
             body.put("to", new String[]{toEmail});
             body.put("subject", "Your Nixtap " + purpose + " Code");
             body.put("html", "<h1>Your OTP Code</h1><p>Your OTP code is: <strong>" + otp + "</strong></p><p>This code will expire in 15 minutes.</p>");

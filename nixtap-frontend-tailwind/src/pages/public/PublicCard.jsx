@@ -186,9 +186,24 @@ export default function PublicCard() {
       });
     }
     
-    if (card.customFields?.googleMaps) {
-      vcard += `itemMap.URL:${ensureAbsoluteUrl(card.customFields.googleMaps, 'map')}\n`;
-      vcard += `itemMap.X-ABLabel:Location\n`;
+    let mapAdded = false;
+    if (card.customFields) {
+      if (card.customFields.googleMaps) {
+        vcard += `itemMap.URL:${ensureAbsoluteUrl(card.customFields.googleMaps, 'map')}\n`;
+        vcard += `itemMap.X-ABLabel:Location\n`;
+        mapAdded = true;
+      }
+      
+      const city = card.customFields.city || '';
+      const state = card.customFields.state || '';
+      const country = card.customFields.country || '';
+      if (city || state || country) {
+        vcard += `ADR;TYPE=HOME:;;;${city};${state};;${country}\n`;
+      }
+      
+      if (card.customFields.website) {
+        vcard += `URL:${ensureAbsoluteUrl(card.customFields.website, 'website')}\n`;
+      }
     }
     
     vcard += `END:VCARD`;

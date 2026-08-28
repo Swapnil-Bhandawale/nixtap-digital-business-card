@@ -19,14 +19,18 @@ public class PublicAnalyticsController {
 
     private final AnalyticsService analyticsService;
 
-    @PostMapping("/views")
+    @PostMapping(value = "/views")
     @Operation(summary = "Record a profile view — no auth")
     public ResponseEntity<ApiResponse<Void>> recordView(
             @PathVariable Long cardId,
-            @RequestBody(required = false) ProfileViewRequest req,
             HttpServletRequest httpRequest) {
         String ip = httpRequest.getHeader("X-Forwarded-For");
         if (ip == null || ip.isBlank()) ip = httpRequest.getRemoteAddr();
+        
+        ProfileViewRequest req = new ProfileViewRequest();
+        req.setUserAgent(httpRequest.getHeader("User-Agent"));
+        req.setReferrer(httpRequest.getHeader("Referer"));
+        
         analyticsService.recordView(cardId, ip, req);
         return ResponseEntity.ok(ApiResponse.success("View recorded", null));
     }
