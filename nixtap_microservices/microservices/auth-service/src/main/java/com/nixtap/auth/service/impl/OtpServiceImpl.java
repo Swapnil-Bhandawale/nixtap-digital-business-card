@@ -97,6 +97,7 @@ public class OtpServiceImpl implements OtpService {
             throw new RuntimeException("Invalid OTP");
         }
         
+        user.setIsVerified(true);
         user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
         user.setOtpHash(null);
         user.setOtpExpiresAt(null);
