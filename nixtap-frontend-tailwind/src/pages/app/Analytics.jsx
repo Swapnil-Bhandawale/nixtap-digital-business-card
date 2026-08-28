@@ -49,6 +49,7 @@ const CHANNEL_META = {
   YOUTUBE: { label: 'YouTube', icon: getSocial('youtube').icon, color: getSocial('youtube').color, isSvg: true },
   GITHUB: { label: 'GitHub', icon: getSocial('github').icon, color: getSocial('github').color, isSvg: true },
   WEBSITE: { label: 'Website', icon: getSocial('website').icon, color: getSocial('website').color, isSvg: true },
+  GOOGLE: { label: 'Google Search', icon: Share2, color: '#EA4335', isSvg: false },
   DIRECT: { label: 'Direct / Unknown', icon: Link2, color: '#64748b', isSvg: false },
   OTHER: { label: 'Other', icon: Share2, color: '#94a3b8', isSvg: false }
 };
@@ -212,7 +213,8 @@ export default function Analytics() {
       if (s.includes('whatsapp') || s.includes('wa.me')) return 'WHATSAPP';
       if (s.includes('youtube') || s.includes('youtu.be')) return 'YOUTUBE';
       if (s.includes('github')) return 'GITHUB';
-      if (s === 'direct') return 'DIRECT';
+      if (s.includes('google')) return 'GOOGLE';
+      if (s.includes('direct') || s === 'direct') return 'DIRECT';
       return 'OTHER';
     };
 
