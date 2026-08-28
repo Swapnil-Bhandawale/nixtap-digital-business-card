@@ -193,7 +193,7 @@ export default function Analytics() {
       'Unknown': '#94a3b8'
     };
     return rows.map((r) => ({
-      name: r.device,
+      name: r.device === 'Unknown' ? 'Other' : r.device,
       value: r.count,
       fill: colors[r.device] || colors.Unknown
     }));
