@@ -29,7 +29,12 @@ const ensureAbsoluteUrl = (url, platform) => {
     if (platform === 'github') return 'https://github.com/' + cleanUrl;
     if (platform === 'linkedin') return 'https://linkedin.com/in/' + cleanUrl;
     if (platform === 'facebook') return 'https://facebook.com/' + cleanUrl;
-    if (platform === 'youtube') return 'https://youtube.com/@' + cleanUrl;
+    if (platform === 'youtube') {
+      if (cleanUrl.startsWith('UC') && cleanUrl.length === 24) {
+        return 'https://youtube.com/channel/' + cleanUrl;
+      }
+      return 'https://youtube.com/@' + cleanUrl;
+    }
   }
   
   return 'https://' + cleanUrl;
