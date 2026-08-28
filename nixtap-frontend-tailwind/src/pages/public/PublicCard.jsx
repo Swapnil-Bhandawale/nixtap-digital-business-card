@@ -286,12 +286,12 @@ END:VCARD`;
                 </a>
               )}
               {card.customFields?.upi && (
-                <a href={card.customFields.upi.includes('://') ? card.customFields.upi : `upi://pay?pa=${card.customFields.upi}`} target="_blank" rel="noopener noreferrer" className="w-full flex flex-col items-center justify-center bg-white border border-slate-100 hover:border-blue-200 hover:shadow-[0_8px_20px_rgb(0,0,0,0.04)] transition-all p-5 rounded-[24px] shadow-[0_2px_10px_rgba(0,0,0,0.03)] group gap-3 text-center">
+                <button onClick={() => setIsPaymentOpen(true)} className="w-full flex flex-col items-center justify-center bg-white border border-slate-100 hover:border-blue-200 hover:shadow-[0_8px_20px_rgb(0,0,0,0.04)] transition-all p-5 rounded-[24px] shadow-[0_2px_10px_rgba(0,0,0,0.03)] group gap-3 text-center">
                   <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center group-hover:bg-emerald-500 transition-colors shrink-0 shadow-inner">
                     <IndianRupee className="w-5 h-5 text-emerald-600 group-hover:text-white transition-colors" />
                   </div>
                   <span className="font-semibold text-slate-800 text-[13px] leading-tight">Make a<br/>Payment</span>
-                </a>
+                </button>
               )}
               <button onClick={() => setIsLeadOpen(true)} className="w-full flex flex-col items-center justify-center bg-white border border-slate-100 hover:border-blue-200 hover:shadow-[0_8px_20px_rgb(0,0,0,0.04)] transition-all p-5 rounded-[24px] shadow-[0_2px_10px_rgba(0,0,0,0.03)] group gap-3 text-center">
                 <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-500 transition-colors shrink-0 shadow-inner">
