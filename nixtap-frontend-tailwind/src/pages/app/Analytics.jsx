@@ -658,7 +658,9 @@ export default function Analytics() {
                           <div className="flex justify-between text-sm mb-2">
                             <span className="font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
                               {meta.isSvg ? (
-                                <span dangerouslySetInnerHTML={{ __html: Icon }} className="w-4 h-4" style={{ color: meta.color }} />
+                                <span className="w-4 h-4 flex items-center justify-center" style={{ color: meta.color }}>
+                                  {Icon}
+                                </span>
                               ) : (
                                 <Icon className="w-4 h-4" style={{ color: meta.color }} />
                               )}
