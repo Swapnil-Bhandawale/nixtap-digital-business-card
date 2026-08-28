@@ -165,15 +165,30 @@ export default function PublicCard() {
   }, [cardId]);
 
   const handleSaveContact = () => {
-    const vcard = `BEGIN:VCARD
-VERSION:3.0
-FN:${card.fullName || ''}
-ORG:${card.company || ''}
-TITLE:${card.jobTitle || ''}
-TEL;TYPE=CELL:${card.phone || ''}
-EMAIL;TYPE=PREF,INTERNET:${card.email || ''}
-URL:${card.shareableUrl || window.location.href}
-END:VCARD`;
+    let vcard = `BEGIN:VCARD\nVERSION:3.0\n`;
+    if (card.fullName) vcard += `FN:${card.fullName}\nN:${card.fullName};;;;\n`;
+    if (card.company) vcard += `ORG:${card.company}\n`;
+    if (card.jobTitle) vcard += `TITLE:${card.jobTitle}\n`;
+    if (card.phone) vcard += `TEL;TYPE=CELL:${card.phone}\n`;
+    if (card.email) vcard += `EMAIL;TYPE=WORK,INTERNET:${card.email}\n`;
+    if (card.bio) vcard += `NOTE:${card.bio.replace(/\n/g, '\\n')}\n`;
+    vcard += `URL:${window.location.href}\n`;
+    
+    if (card.profileImageUrl) {
+      vcard += `PHOTO;VALUE=URI:${card.profileImageUrl}\n`;
+    }
+    
+    if (card.socialLinks && card.socialLinks.length > 0) {
+      card.socialLinks.forEach(link => {
+        vcard += `URL;type=${link.platform}:${ensureAbsoluteUrl(link.url, link.platform)}\n`;
+      });
+    }
+    
+    if (card.customFields?.googleMaps) {
+      vcard += `URL;type=Location:${ensureAbsoluteUrl(card.customFields.googleMaps, 'map')}\n`;
+    }
+    
+    vcard += `END:VCARD`;
 
     const blob = new Blob([vcard], { type: 'text/vcard' });
     const url = window.URL.createObjectURL(blob);
