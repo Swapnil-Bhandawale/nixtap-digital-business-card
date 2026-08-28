@@ -49,6 +49,7 @@ const CHANNEL_META = {
   YOUTUBE: { label: 'YouTube', icon: getSocial('youtube').icon, color: getSocial('youtube').color, isSvg: true },
   GITHUB: { label: 'GitHub', icon: getSocial('github').icon, color: getSocial('github').color, isSvg: true },
   WEBSITE: { label: 'Website', icon: getSocial('website').icon, color: getSocial('website').color, isSvg: true },
+  DIRECT: { label: 'Direct / Unknown', icon: Link2, color: '#64748b', isSvg: false },
   OTHER: { label: 'Other', icon: Share2, color: '#94a3b8', isSvg: false }
 };
 
@@ -199,8 +200,35 @@ export default function Analytics() {
 
   const sourceChartData = useMemo(() => {
     const rows = data?.viewsBySource ?? [];
-    const max = Math.max(1, ...rows.map((r) => r.count));
-    return rows.map(r => ({ ...r, pct: (r.count / max) * 100 })).sort((a, b) => b.count - a.count);
+    
+    // Helper to map raw referrer URLs to known channels
+    const normalizeSource = (src) => {
+      if (!src || src === 'null' || src === 'undefined') return 'DIRECT';
+      const s = src.toLowerCase();
+      if (s.includes('linkedin')) return 'LINKEDIN';
+      if (s.includes('twitter') || s.includes('t.co')) return 'TWITTER';
+      if (s.includes('facebook') || s.includes('fb.com')) return 'FACEBOOK';
+      if (s.includes('instagram')) return 'INSTAGRAM';
+      if (s.includes('whatsapp') || s.includes('wa.me')) return 'WHATSAPP';
+      if (s.includes('youtube') || s.includes('youtu.be')) return 'YOUTUBE';
+      if (s.includes('github')) return 'GITHUB';
+      if (s === 'direct') return 'DIRECT';
+      return 'OTHER';
+    };
+
+    // Group by normalized channel
+    const grouped = {};
+    rows.forEach(r => {
+      const channel = normalizeSource(r.source);
+      grouped[channel] = (grouped[channel] || 0) + r.count;
+    });
+
+    const aggregatedRows = Object.keys(grouped).map(k => ({ source: k, count: grouped[k] }));
+    const max = Math.max(1, ...aggregatedRows.map((r) => r.count));
+    
+    return aggregatedRows
+      .map(r => ({ ...r, pct: (r.count / max) * 100 }))
+      .sort((a, b) => b.count - a.count);
   }, [data]);
 
   const loading = status === 'loading';
