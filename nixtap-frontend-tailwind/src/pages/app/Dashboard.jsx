@@ -105,7 +105,7 @@ export default function Dashboard() {
       let dailyViewsMap = {};
 
       await Promise.allSettled(cards.map(async (c) => {
-        totalViews += (c.views || 0);
+        
 
         const [leadResult, apptResult, analyticsResult] = await Promise.allSettled([
           axiosInstance.get(`/cards/${c.id}/leads`),
@@ -116,6 +116,7 @@ export default function Dashboard() {
         if (leadResult.status === 'fulfilled') {
           const cardLeads = leadResult.value.data?.data || [];
           totalLeads += cardLeads.length;
+          c.leads = cardLeads.length;
           cardLeads.forEach(lead => {
             allLeads.push({ ...lead, cardName: c.title || c.name || c.fullName });
             allActivity.push({
@@ -131,6 +132,7 @@ export default function Dashboard() {
         if (apptResult.status === 'fulfilled') {
           const cardAppts = apptResult.value.data?.data || [];
           totalAppts += cardAppts.length;
+          c.appointments = cardAppts.length;
           cardAppts.forEach(appt => {
             allAppts.push({ ...appt, cardName: c.title || c.name || c.fullName });
             allActivity.push({
@@ -159,7 +161,10 @@ export default function Dashboard() {
         }
 
         if (analyticsResult.status === 'fulfilled') {
-          const viewsByDay = analyticsResult.value?.data?.viewsByDay || [];
+          const analyticsData = analyticsResult.value?.data?.data || analyticsResult.value?.data || {};
+          c.views = analyticsData.totalViews || 0;
+          totalViews += c.views;
+          const viewsByDay = analyticsData.viewsByDay || [];
           viewsByDay.forEach(dayData => {
             const dateStr = new Date(dayData.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
             dailyViewsMap[dateStr] = (dailyViewsMap[dateStr] || 0) + (dayData.count || 0);

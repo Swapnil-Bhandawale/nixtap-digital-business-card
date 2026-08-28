@@ -9,12 +9,30 @@ import { QRCodeSVG } from 'qrcode.react';
 
 
 
-const ensureAbsoluteUrl = (url) => {
+const ensureAbsoluteUrl = (url, platform) => {
   if (!url) return '#';
-  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('mailto:') || url.startsWith('tel:') || url.startsWith('upi://')) {
-    return url;
+  let cleanUrl = url.trim();
+  if (cleanUrl.startsWith('@')) cleanUrl = cleanUrl.substring(1);
+  
+  if (platform === 'whatsapp') {
+    cleanUrl = cleanUrl.replace(/[^0-9]/g, '');
+    return 'https://wa.me/' + cleanUrl;
   }
-  return 'https://' + url;
+  
+  if (cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://') || cleanUrl.startsWith('mailto:') || cleanUrl.startsWith('tel:') || cleanUrl.startsWith('upi://')) {
+    return cleanUrl;
+  }
+  
+  if (!cleanUrl.includes('.') || !cleanUrl.includes('/')) {
+    if (platform === 'instagram') return 'https://instagram.com/' + cleanUrl;
+    if (platform === 'twitter') return 'https://twitter.com/' + cleanUrl;
+    if (platform === 'github') return 'https://github.com/' + cleanUrl;
+    if (platform === 'linkedin') return 'https://linkedin.com/in/' + cleanUrl;
+    if (platform === 'facebook') return 'https://facebook.com/' + cleanUrl;
+    if (platform === 'youtube') return 'https://youtube.com/@' + cleanUrl;
+  }
+  
+  return 'https://' + cleanUrl;
 };
 
 export default function PublicCard() {
@@ -245,7 +263,7 @@ END:VCARD`;
                   const platformData = SOCIAL_PLATFORMS.find(p => p.key === link.platform.toLowerCase());
                   if (!platformData) return null;
                   return (
-                    <a key={link.id} href={ensureAbsoluteUrl(link.url)} target="_blank" rel="noopener noreferrer" className="w-[64px] h-[64px] bg-white border border-slate-100 shadow-[0_4px_15px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] hover:border-slate-200 rounded-[20px] flex items-center justify-center transition-all transform hover:-translate-y-1 group" style={{ color: platformData.color }}>
+                    <a key={link.id} href={ensureAbsoluteUrl(link.url, platformData.key)} target="_blank" rel="noopener noreferrer" className="w-[64px] h-[64px] bg-white border border-slate-100 shadow-[0_4px_15px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] hover:border-slate-200 rounded-[20px] flex items-center justify-center transition-all transform hover:-translate-y-1 group" style={{ color: platformData.color }}>
                       <div className="w-8 h-8 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full group-hover:scale-110 transition-transform">
                         {platformData.icon}
                       </div>
