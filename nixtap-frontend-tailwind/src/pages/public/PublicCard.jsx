@@ -44,6 +44,7 @@ export default function PublicCard() {
   const { cardId } = useParams();
   const [card, setCard] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSaved, setIsSaved] = useState(false);
 
   const [isApptOpen, setIsApptOpen] = useState(false);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
@@ -179,13 +180,15 @@ export default function PublicCard() {
     }
     
     if (card.socialLinks && card.socialLinks.length > 0) {
-      card.socialLinks.forEach(link => {
-        vcard += `URL;type=${link.platform}:${ensureAbsoluteUrl(link.url, link.platform)}\n`;
+      card.socialLinks.forEach((link, idx) => {
+        vcard += `item${idx+1}.URL:${ensureAbsoluteUrl(link.url, link.platform)}\n`;
+        vcard += `item${idx+1}.X-ABLabel:${link.platform}\n`;
       });
     }
     
     if (card.customFields?.googleMaps) {
-      vcard += `URL;type=Location:${ensureAbsoluteUrl(card.customFields.googleMaps, 'map')}\n`;
+      vcard += `itemMap.URL:${ensureAbsoluteUrl(card.customFields.googleMaps, 'map')}\n`;
+      vcard += `itemMap.X-ABLabel:Location\n`;
     }
     
     vcard += `END:VCARD`;
@@ -200,6 +203,8 @@ export default function PublicCard() {
     a.click();
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
+      setIsSaved(true);
+      setTimeout(() => setIsSaved(false), 3000);
   };
 
   if (isLoading) return <div className="min-h-screen flex items-center justify-center bg-gray-50">Loading profile...</div>;
@@ -256,9 +261,10 @@ export default function PublicCard() {
 
           {/* Primary Action Buttons */}
           <div className="w-full flex gap-3 mb-8">
-            <button onClick={handleSaveContact} className="flex-1 py-3.5 rounded-full text-white font-bold text-[15px] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 transform active:scale-[0.98] shadow-lg flex items-center justify-center gap-2" style={{ background: themeColor, shadowcolor: accentColor }}>
-              <Download className="w-4 h-4" /> Save Contact
-            </button>
+            <button onClick={handleSaveContact} className={`flex-1 py-3.5 rounded-full text-white font-bold text-[15px] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 transform active:scale-[0.98] shadow-lg flex items-center justify-center gap-2 ${isSaved ? '!bg-emerald-500' : ''}`} style={!isSaved ? { background: themeColor, shadowcolor: accentColor } : {}}>
+                {isSaved ? <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg> : <Download className="w-4 h-4" />}
+                {isSaved ? 'Saved!' : 'Save Contact'}
+              </button>
             <button onClick={() => setIsApptOpen(true)} className="w-[52px] h-[52px] rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all transform active:scale-[0.98] shadow-sm group" style={{ color: accentColor }}>
               <Calendar className="w-5 h-5 transition-colors" />
             </button>
