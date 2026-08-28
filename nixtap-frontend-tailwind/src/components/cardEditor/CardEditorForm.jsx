@@ -425,12 +425,12 @@ export default function CardEditorForm({ mode = 'create', cardId = null, initial
                   onClick={() => toggleSocial(p.key)}
                   className={`cursor-pointer rounded-xl border px-1.5 py-2.5 flex flex-col items-center gap-1.5 text-[10px] font-medium transition-colors ${
                     isOn
-                      ? 'bg-blue-500/10 border-blue-500/40 text-blue-700 dark:text-blue-400'
+                      ? 'bg-blue-500/10 border-blue-500/40'
                       : 'bg-black/[0.02] dark:bg-white/[0.03] border-black/10 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:bg-black/[0.04] dark:hover:bg-white/[0.06]'
                   }`}
                 >
-                  <span className="w-[18px] h-[18px]">{p.icon}</span>
-                  <span>{p.label}</span>
+                  <span className="w-[18px] h-[18px]" style={isOn ? { color: p.color } : {}}>{p.icon}</span>
+                  <span className={isOn ? 'text-blue-700 dark:text-blue-400' : ''}>{p.label}</span>
                   {isOn && (
                     <input
                       onClick={(e) => e.stopPropagation()}
