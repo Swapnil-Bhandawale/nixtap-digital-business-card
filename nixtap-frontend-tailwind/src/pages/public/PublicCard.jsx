@@ -5,7 +5,17 @@ import { publicApi } from '../../api/publicApi';
 import { Mail, Phone, Globe, MapPin, Share2, Download, Calendar, BookOpen, MessageSquare, IndianRupee } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { SOCIAL_PLATFORMS } from '../../data/socialIcons';
+import { QRCodeSVG } from 'qrcode.react';
 
+
+
+const ensureAbsoluteUrl = (url) => {
+  if (!url) return '#';
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('mailto:') || url.startsWith('tel:') || url.startsWith('upi://')) {
+    return url;
+  }
+  return 'https://' + url;
+};
 
 export default function PublicCard() {
   const { cardId } = useParams();
@@ -13,6 +23,7 @@ export default function PublicCard() {
   const [isLoading, setIsLoading] = useState(true);
 
   const [isApptOpen, setIsApptOpen] = useState(false);
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [isLeadOpen, setIsLeadOpen] = useState(false);
   const [leadState, setLeadState] = useState('idle');
   const [leadForm, setLeadForm] = useState({ name: '', email: '', phone: '', message: '' });
@@ -111,8 +122,16 @@ export default function PublicCard() {
         } catch(e) {
            console.log("Feedbacks not found", e);
         }
+          // Record View once
+          if (data && data.id) {
+            const viewKey = `viewed_${data.id}`;
+            if (!localStorage.getItem(viewKey)) {
+              publicApi.recordView(data.id).catch(e => console.error(e));
+              localStorage.setItem(viewKey, 'true');
+            }
+          }
+        } catch (error) {
 
-      } catch (error) {
         console.error('Failed to load public card', error);
         setCard(null);
       } finally {
@@ -226,7 +245,7 @@ END:VCARD`;
                   const platformData = SOCIAL_PLATFORMS.find(p => p.key === link.platform.toLowerCase());
                   if (!platformData) return null;
                   return (
-                    <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="w-[64px] h-[64px] bg-white border border-slate-100 shadow-[0_4px_15px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] hover:border-slate-200 rounded-[20px] flex items-center justify-center transition-all transform hover:-translate-y-1 group" style={{ color: platformData.color }}>
+                    <a key={link.id} href={ensureAbsoluteUrl(link.url)} target="_blank" rel="noopener noreferrer" className="w-[64px] h-[64px] bg-white border border-slate-100 shadow-[0_4px_15px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] hover:border-slate-200 rounded-[20px] flex items-center justify-center transition-all transform hover:-translate-y-1 group" style={{ color: platformData.color }}>
                       <div className="w-8 h-8 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full group-hover:scale-110 transition-transform">
                         {platformData.icon}
                       </div>
@@ -241,7 +260,7 @@ END:VCARD`;
           <div className="w-full mb-8">
             <div className="grid grid-cols-2 gap-3 mb-3">
               {card.customFields?.googleMaps && (
-                <a href={card.customFields.googleMaps} target="_blank" rel="noopener noreferrer" className="w-full flex flex-col items-center justify-center bg-white border border-slate-100 hover:border-blue-200 hover:shadow-[0_8px_20px_rgb(0,0,0,0.04)] transition-all p-5 rounded-[24px] shadow-[0_2px_10px_rgba(0,0,0,0.03)] group gap-3 text-center">
+                <a href={ensureAbsoluteUrl(card.customFields.googleMaps)} target="_blank" rel="noopener noreferrer" className="w-full flex flex-col items-center justify-center bg-white border border-slate-100 hover:border-blue-200 hover:shadow-[0_8px_20px_rgb(0,0,0,0.04)] transition-all p-5 rounded-[24px] shadow-[0_2px_10px_rgba(0,0,0,0.03)] group gap-3 text-center">
                   <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-500 transition-colors shrink-0 shadow-inner">
                     <img src="https://img.icons8.com/color/48/google-maps-new.png" alt="Google Maps" className="w-7 h-7 transition-all duration-300 group-hover:brightness-0 group-hover:invert" />
                   </div>
@@ -324,7 +343,33 @@ END:VCARD`;
 
         {/* MODALS */}
         {/* Lead Capture Modal */}
-          {isLeadOpen && (
+                {/* Payment Modal */}
+      {isPaymentOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setIsPaymentOpen(false)}></div>
+          <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden max-h-[90vh]">
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between shrink-0">
+              <h2 className="text-xl font-bold text-gray-900">Make a Payment</h2>
+              <button onClick={() => setIsPaymentOpen(false)} className="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <div className="p-8 flex flex-col items-center justify-center overflow-y-auto">
+              <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-6">
+                <QRCodeSVG value={card.customFields.upi.includes('://') ? card.customFields.upi : `upi://pay?pa=${card.customFields.upi}`} size={200} />
+              </div>
+              <p className="text-sm text-slate-500 mb-2">Scan with any UPI app</p>
+              <p className="text-lg font-bold text-slate-800 mb-6">{card.customFields.upi}</p>
+              
+              <a href={card.customFields.upi.includes('://') ? card.customFields.upi : `upi://pay?pa=${card.customFields.upi}`} className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-semibold transition-colors flex justify-center items-center gap-2">
+                <IndianRupee className="w-4 h-4" /> Open UPI App
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isLeadOpen && (
             <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4 animate-in fade-in duration-200">
               <div className="bg-white w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                 <div className="p-6 border-b border-gray-100 flex items-center justify-between shrink-0">
