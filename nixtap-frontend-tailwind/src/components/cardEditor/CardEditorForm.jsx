@@ -431,8 +431,8 @@ export default function CardEditorForm({ mode = 'create', cardId = null, initial
                   }`}
                 >
                   <span 
-                    className={`w-[18px] h-[18px] ${isOn ? 'text-[var(--brand-color)] dark:text-[var(--brand-color-dark)]' : ''}`} 
-                    style={isOn ? { '--brand-color': p.color, '--brand-color-dark': isDarkBrand ? '#ffffff' : p.color } : {}}
+                    className="w-[18px] h-[18px] text-[var(--brand-color)] dark:text-[var(--brand-color-dark)]" 
+                    style={{ '--brand-color': p.color, '--brand-color-dark': isDarkBrand ? '#ffffff' : p.color }}
                   >
                     {p.icon}
                   </span>
