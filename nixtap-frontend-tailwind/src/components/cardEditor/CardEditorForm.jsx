@@ -400,7 +400,7 @@ export default function CardEditorForm({ mode = 'create', cardId = null, initial
                 onChange={(e) => setField('bio', e.target.value)} 
                 placeholder="Tell your clients about yourself..." 
                 rows={3}
-                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+                className="w-full bg-white dark:bg-transparent border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
               />
             </Field>
             
@@ -419,6 +419,7 @@ export default function CardEditorForm({ mode = 'create', cardId = null, initial
           <div className="grid grid-cols-4 gap-2">
             {SOCIAL_PLATFORMS.map((p) => {
               const isOn = socials[p.key] !== undefined;
+              const isDarkBrand = p.color === '#000000' || p.color === '#24292e';
               return (
                 <div
                   key={p.key}
@@ -429,7 +430,12 @@ export default function CardEditorForm({ mode = 'create', cardId = null, initial
                       : 'bg-black/[0.02] dark:bg-white/[0.03] border-black/10 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:bg-black/[0.04] dark:hover:bg-white/[0.06]'
                   }`}
                 >
-                  <span className="w-[18px] h-[18px]" style={isOn ? { color: p.color } : {}}>{p.icon}</span>
+                  <span 
+                    className={`w-[18px] h-[18px] ${isOn ? 'text-[var(--brand-color)] dark:text-[var(--brand-color-dark)]' : ''}`} 
+                    style={isOn ? { '--brand-color': p.color, '--brand-color-dark': isDarkBrand ? '#ffffff' : p.color } : {}}
+                  >
+                    {p.icon}
+                  </span>
                   <span className={isOn ? 'text-blue-700 dark:text-blue-400' : ''}>{p.label}</span>
                   {isOn && (
                     <input
