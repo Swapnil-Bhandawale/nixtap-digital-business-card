@@ -189,8 +189,8 @@ export default function PublicCard() {
     let mapAdded = false;
     if (card.customFields) {
       if (card.customFields.googleMaps) {
-        vcard += `itemMap.URL:${ensureAbsoluteUrl(card.customFields.googleMaps, 'map')}\n`;
-        vcard += `itemMap.X-ABLabel:Location\n`;
+        vcard += `item99.URL:${ensureAbsoluteUrl(card.customFields.googleMaps, 'map')}\n`;
+        vcard += `item99.X-ABLabel:Location\n`;
         mapAdded = true;
       }
       
