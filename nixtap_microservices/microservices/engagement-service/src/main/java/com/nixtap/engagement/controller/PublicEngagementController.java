@@ -21,13 +21,14 @@ public class PublicEngagementController {
     private final EngagementService engagementService;
     private final ObjectMapper mapper = new ObjectMapper()
             .registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule())
-            .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .disable(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
     @GetMapping("/feedback")
     @Operation(summary = "Visitor reads feedback for Wall of Love")
     public ResponseEntity<ApiResponse<java.util.List<VisitorFeedbackResponse>>> getPublicFeedback(
             @PathVariable Long cardId) {
-        return ResponseEntity.ok(ApiResponse.success("Feedback fetched", engagementService.getFeedback(cardId)));
+        return ResponseEntity.ok(ApiResponse.success("Feedback fetched", engagementService.getPublicFeedback(cardId)));
     }
     
     private String getBody(HttpServletRequest request) throws Exception {

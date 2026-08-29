@@ -172,6 +172,11 @@ public class EngagementServiceImpl implements EngagementService {
                 .stream().map(this::toFeedbackResponse).collect(Collectors.toList());
     }
 
+    public List<VisitorFeedbackResponse> getPublicFeedback(Long cardId) {
+        return feedbackRepo.findByCardIdOrderByCreatedAtDesc(cardId)
+                .stream().map(this::toFeedbackResponse).collect(Collectors.toList());
+    }
+
     private LeadCaptureResponse toLeadResponse(LeadCapture l) {
         return LeadCaptureResponse.builder()
                 .id(l.getId()).cardId(l.getCardId())

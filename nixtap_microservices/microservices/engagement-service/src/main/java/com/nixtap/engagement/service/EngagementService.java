@@ -9,6 +9,7 @@ public interface EngagementService {
     LeadCaptureResponse submitLead(Long cardId, LeadCaptureRequest request);
     AppointmentResponse bookAppointment(Long cardId, AppointmentRequest request);
     VisitorFeedbackResponse submitFeedback(Long cardId, VisitorFeedbackRequest request);
+    List<VisitorFeedbackResponse> getPublicFeedback(Long cardId);
 
     // Owner — views and manages
     List<LeadCaptureResponse> getLeads(Long cardId);
