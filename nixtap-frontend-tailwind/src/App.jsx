@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/authStore';
 import { useEffect } from 'react';
-import { ThemeProvider } from './context/ThemeContext';
 
 // Public Pages
 import Landing from './pages/public/new-landing/Landing';
@@ -58,43 +57,41 @@ const GuestRoute = ({ children }) => {
 
 function App() {
   return (
-    <ThemeProvider>
-      <Router>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Landing />} />
-          <Route path="/c/:cardId" element={<PublicCard />} />
-          
-          {/* Auth Routes */}
-          <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
-          <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
-          <Route path="/forgot-password" element={<GuestRoute><ForgotPassword /></GuestRoute>} />
-          <Route path="/verify-otp" element={<GuestRoute><VerifyOtp /></GuestRoute>} />
+    <Router>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<Landing />} />
+        <Route path="/c/:cardId" element={<PublicCard />} />
+        
+        {/* Auth Routes */}
+        <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
+        <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
+        <Route path="/forgot-password" element={<GuestRoute><ForgotPassword /></GuestRoute>} />
+        <Route path="/verify-otp" element={<GuestRoute><VerifyOtp /></GuestRoute>} />
 
-          {/* Protected App Routes */}
-          <Route path="/dashboard" element={
-            <ProtectedRoute>
-              <DashboardLayout />
-            </ProtectedRoute>
-          }>
-            <Route index element={<Dashboard />} />
-            <Route path="cards" element={<MyCards />} />
-            <Route path="cards/create" element={<CreateCard />} />
-            <Route path="cards/:id/edit" element={<EditCard />} />
-            <Route path="templates" element={<Templates />} />
-            <Route path="leads" element={<Leads />} />
-            <Route path="appointments" element={<Appointments />} />
-            <Route path="analytics" element={<Analytics />} />
-            <Route path="feedback" element={<Feedback />} />
-            <Route path="premium" element={<Premium />} />
-            <Route path="settings" element={<Settings />} />
-          </Route>
+        {/* Protected App Routes */}
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }>
+          <Route index element={<Dashboard />} />
+          <Route path="cards" element={<MyCards />} />
+          <Route path="cards/create" element={<CreateCard />} />
+          <Route path="cards/:id/edit" element={<EditCard />} />
+          <Route path="templates" element={<Templates />} />
+          <Route path="leads" element={<Leads />} />
+          <Route path="appointments" element={<Appointments />} />
+          <Route path="analytics" element={<Analytics />} />
+          <Route path="feedback" element={<Feedback />} />
+          <Route path="premium" element={<Premium />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
 
-          {/* Catch-all 404 route */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Router>
-    </ThemeProvider>
+        {/* Catch-all 404 route */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
   );
 }
 

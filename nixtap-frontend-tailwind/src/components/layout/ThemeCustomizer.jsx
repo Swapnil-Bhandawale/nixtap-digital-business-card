@@ -1,6 +1,6 @@
 import { X, Sun, Moon, Monitor, PanelLeft, PanelTop, Maximize, Shrink, AlignLeft, AlignRight, Globe, Check, Lock } from 'lucide-react';
 import { useSettingsStore } from '../../store/settingsStore';
-import { useTheme } from '../../context/ThemeContext';
+import { useThemeStore } from '../../store/themeStore';
 import { themeColorMap } from '../../utils/themeColors';
 import { useEffect } from 'react';
 import { useAuthStore } from '../../store/authStore';
@@ -29,7 +29,7 @@ const colors = [
 
 export default function ThemeCustomizer({ isOpen, onClose }) {
   const settings = useSettingsStore();
-  const { setTheme } = useTheme();
+  const { setTheme } = useThemeStore();
   const { user } = useAuthStore();
   const isPro = user?.planType === 'PRO' || user?.planType === 'BUSINESS';
   

@@ -3,7 +3,7 @@ import {
   LayoutGrid, CreditCard, Users, Calendar, BarChart3, MessageSquare, Layers, Settings,
   Sun, Moon, LogOut, Menu, X, Search, Plus, Palette, Bell, CheckCircle, Clock
 } from 'lucide-react';
-import { useTheme } from '../../context/ThemeContext';
+import { useThemeStore } from '../../store/themeStore';
 import { useAuthStore } from '../../store/authStore';
 import { useSettingsStore } from '../../store/settingsStore';
 import { themeColorMap } from '../../utils/themeColors';
@@ -59,7 +59,7 @@ const t = (key, lang) => {
 export default function DashboardLayout() {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
-  const { theme, setTheme } = useTheme();
+  const { theme, toggleTheme } = useThemeStore();
   
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
@@ -302,7 +302,7 @@ export default function DashboardLayout() {
         </button>
 
         <div className="flex items-center gap-1 lg:gap-2 ml-1">
-          <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors">
+          <button onClick={toggleTheme} className="p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors">
             {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
           
