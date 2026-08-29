@@ -55,10 +55,14 @@ export default function EditCard() {
           dial,
           phoneNumber,
           website: customFields.website || '',
+          bio: card.bio || '',
           themeGradient: card.theme || null,
           avatarUrl: card.profileImageUrl || null,
           bannerUrl: card.coverImageUrl || null,
           socials,
+          customFields: {
+            ...customFields
+          }
         });
         setStatus('ready');
       })
